@@ -4072,9 +4072,14 @@ linkUpdateInAir:
 	call specialObjectUpdateAdjacentWallsBitset
 	jp initLinkState
 
+
 ;;
 ; @param[out]	zflag	If set, linkState01_sidescroll will return prematurely.
 linkUpdateInAir_sidescroll:
+	ld a,(wAntigravState)
+	or a
+	jp nz,linkUpdateInAir_sidescroll_inverted
+
 	ld a,(wLinkInAir)
 	and $0f
 	rst_jumpTable
@@ -4163,7 +4168,7 @@ linkUpdateInAir_sidescroll:
 
 	ld a,(wLastActiveTileType)
 	cp (TILETYPE_SS_LADDER | TILETYPE_SS_LADDER_TOP)
-	jr z,@landedOnGround
+	jp z,@landedOnGround
 +
 	ld hl,wActiveTileType
 	ldi a,(hl)
@@ -4270,6 +4275,212 @@ linkUpdateInAir_sidescroll:
 	ld a,(de)
 	and $f8
 	add $01
+	ld (de),a
+
+@landed:
+	xor a
+	ld e,SpecialObject.speedZ
+	ld (de),a
+	inc e
+	ld (de),a
+
+	ld (wLinkInAir),a
+
+	; Check if he landed on a spike
+	ld a,(wActiveTileIndex)
+	cp TILEINDEX_SS_SPIKE
+	call z,dealSpikeDamageToLink
+
+	ld a,SND_LAND
+	call playSound
+	call animateLinkStanding
+	xor a
+	ret
+
+@playingInstrument:
+	ld e,SpecialObject.var12
+	xor a
+	ld (de),a
+
+	; Write $ff to the variable that you just wrote $00 to? OK, game.
+	ld a,$ff
+	ld (de),a
+
+	ld e,SpecialObject.angle
+	ld (de),a
+	jr @landed
+
+
+; Clone of above function for inverted gravity
+linkUpdateInAir_sidescroll_inverted:
+	ld a,(wLinkInAir)
+	and $0f
+	rst_jumpTable
+	.dw @notInAir
+	.dw @jumping
+	.dw @inAir
+
+@notInAir:
+	ld a,(wLinkRidingObject)
+	or a
+	ret nz
+
+	; Return if Link is on solid ground
+	ld e,SpecialObject.adjacentWallsBitset
+	ld a,(de)
+	and $c0
+	ret nz
+
+	; Return if Link's current tile, or the one he's standing on, is a ladder.
+	ld hl,wActiveTileType
+	ldi a,(hl)
+	or (hl)
+	bit TILETYPE_SS_BIT_LADDER,a
+	ret nz
+
+	; Link is in the air.
+	ld h,d
+	ld l,SpecialObject.speedZ
+	xor a
+	ldi (hl),a
+	ldi (hl),a
+	jr +
+
+@jumping:
+	ld a,SND_JUMP
+	call playSound
++
+	ld a,(wLinkGrabState)
+	ld c,a
+	ld a,(wLinkTurningDisabled)
+	or c
+	ld a,LINK_ANIM_MODE_JUMP
+	call z,specialObjectSetAnimation
+
+	ld a,$02
+	ld (wLinkInAir),a
+	call updateLinkSpeed_standard
+
+@inAir:
+	ld h,d
+	ld l,SpecialObject.speedZ+1
+	bit 7,(hl)
+	jr nz,@negativeSpeedZ
+
+	; If speedZ is positive, check if he hits the floor (TODO)
+	jr @applySpeedZ
+
+@negativeSpeedZ:
+	ld a,(wLinkRidingObject)
+	or a
+	jp nz,@playingInstrument
+
+	; Check if Link is on solid ground
+	ld e,SpecialObject.adjacentWallsBitset
+	ld a,(de)
+	and $c0
+	jp nz,@landedOnGround
+
+	; Check if Link presses down on a ladder; this will put him back into a ground state
+	ld a,(wActiveTileType)
+	bit TILETYPE_SS_BIT_LADDER,a
+	jr z,+
+
+	ld a,(wGameKeysPressed)
+	and BTN_DOWN
+	jp nz,@landed
++
+	ld e,SpecialObject.yh
+	ld a,(de)
+	bit 3,a
+	jr z,+
+
+	ld a,(wLastActiveTileType)
+	cp (TILETYPE_SS_LADDER | TILETYPE_SS_LADDER_TOP)
+	jp z,@landedOnGround
++
+	ld hl,wActiveTileType
+	ldi a,(hl)
+	cp TILETYPE_SS_LAVA
+	jp z,forceDrownLink
+
+	; Check if he's ended up in a hole
+	cp TILETYPE_SS_HOLE
+	jr nz,++
+
+	; Check the tile below link? (In this case, since wLastActiveTileType is the tile
+	; 8 pixels below him, this will probably be the same as wActiveTile, UNTIL he
+	; reaches the center of the tile. At which time, if the tile beneath has
+	; a tileType of $00, Link will respawn.
+	ld a,(hl)
+	or a
+	jr nz,++
+
+	; Damage Link and respawn him.
+	ld a,SND_DAMAGE_LINK
+	call playSound
+	jp respawnLink
+
+++
+	call linkUpdateVelocity
+
+@applySpeedZ:
+	; Apply speedZ to Y position
+	ld l,SpecialObject.y
+	ld e,SpecialObject.speedZ
+	ld a,(de)
+	add (hl)
+	ldi (hl),a
+	inc e
+	ld a,(de)
+	adc (hl)
+	ldi (hl),a
+
+@applyGravity:
+	; Set 'c' to the gravity value (value to subtract from speedZ).
+	ld c,$24
+	ld a,(wLinkInAir)
+	bit 5,a
+	jr z,+
+	ld c,$0e
++
+	ld l,SpecialObject.speedZ
+	ld a,(hl)
+	sub c
+	ldi (hl),a
+	ld a,(hl)
+	sbc $00
+	ldd (hl),a
+
+	; TODO: Cap Link's speedZ to -$0300?
+	call specialObjectUpdateAdjacentWallsBitset
+
+	; Check (again) whether Link has reached the ground.
+	ld e,SpecialObject.adjacentWallsBitset
+	ld a,(de)
+	and $c0
+	jr nz,@landedOnGround
+
+	; Adjusts Link's angle so he doesn't move (on his own) on the y axis.
+	; This is confusing since he has a Z speed, which gets applied to the Y axis. All
+	; this does is prevent Link's movement from affecting the Y axis; it still allows
+	; his Z speed to be applied.
+	; Disabling this would give him some control over the height of his jumps.
+	call linkAdjustAngleInSidescrollingArea
+
+	call specialObjectUpdatePosition
+	call specialObjectAnimate
+
+@notLanded:
+	xor a
+	ret
+
+@landedOnGround:
+	; Lock his y position relative to the tile
+	ld e,SpecialObject.yh
+	ld a,(de)
+	and $f8
+	add $06
 	ld (de),a
 
 @landed:
@@ -4787,7 +4998,12 @@ calculateAdjacentWallsBitset:
 	ld a,(wTilesetFlags)
 	and TILESETFLAG_SIDESCROLL
 	jr z,@loop
+
+	ld a,(wAntigravState)
+	or a
 	ld hl,@sidescrollOffsets
+	jr z,@loop
+	ld hl,@invertedSidescrollOffsets
 
 ; Loop 8 times
 @loop:
@@ -4829,15 +5045,36 @@ calculateAdjacentWallsBitset:
 	.db -5,  9
 	.db  5,  0
 
+.define REL_X 0
+.define REL_Y 0
+.macro m_RelativeOffset
+	.db \1 - REL_Y, \2 - REL_X
+	.redefine REL_Y, \1
+	.redefine REL_X, \2
+.endm
+
 @sidescrollOffsets:
-	.db -3, -3
-	.db  0,  5
-	.db 10, -5
-	.db  0,  5
-	.db -7, -7
-	.db  5,  0
-	.db -5,  9
-	.db  5,  0
+	m_RelativeOffset -3, -3
+	m_RelativeOffset -3, 2
+	m_RelativeOffset 7, -3
+	m_RelativeOffset 7, 2
+	m_RelativeOffset 0, -5
+	m_RelativeOffset 5, -5
+	m_RelativeOffset 0, 4
+	m_RelativeOffset 5, 4
+
+.redefine REL_X 0
+.redefine REL_Y 0
+
+@invertedSidescrollOffsets:
+	m_RelativeOffset -7, -3
+	m_RelativeOffset -7, 2
+	m_RelativeOffset 3, -3
+	m_RelativeOffset 3, 2
+	m_RelativeOffset -5, -5
+	m_RelativeOffset 0, -5
+	m_RelativeOffset -5, 4
+	m_RelativeOffset 0, 4
 
 .ifdef ROM_AGES
 ;;

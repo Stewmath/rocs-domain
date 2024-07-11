@@ -6,6 +6,7 @@ parentItemCode_feather:
 	rst_jumpTable
 	.dw @state0
 	.dw @state1
+	.dw @state2
 
 @state0:
 
@@ -54,9 +55,13 @@ parentItemCode_feather:
 	ld bc,$fe20
 	ld a,(wActiveGroup)
 	cp FIRST_SIDESCROLL_GROUP
-	jr c,+
+	jr c,++
 	ld bc,$fdd0
-+
+	ld a,(wAntigravState)
+	or a
+	jr z,++
+	ld bc,$230
+++
 	ld hl,w1Link.speedZ
 	ld (hl),c
 	inc l
@@ -67,11 +72,11 @@ parentItemCode_feather:
 	ld a,(wFeatherLevel)
 	cp $02
 	ld a,$41
-	jr z,++
+	jr nc,++
 	ld a,$01
 ++
 	ld (wLinkInAir),a
-	jr nz,@deleteParent
+	jr c,@deleteParent
 
 	ld e,Item.state
 	ld a,$01
@@ -87,7 +92,60 @@ parentItemCode_feather:
 	jr nz,@deleteParent
 
 	call parentItemCheckButtonPressed
-	jr z,@deleteParent
+	jr nz,++
+
+	; Remember that the button was released
+	ld a,1
+	ld e,Item.var38
+	ld (de),a
+	jr @doneCheckingButton
+++
+	; Check if button was pressed twice
+	ld e,Item.var38
+	ld a,(de)
+	or a
+	jr z,@doneCheckingButton
+
+	; Activate antigrav
+	ld a,2
+	ld e,Item.state
+	ld (de),a
+	ret
+
+@doneCheckingButton:
+	call @checkForInflection
+	ret nz
+
+	; Time to use cape, if button was held
+	ld e,Item.var38
+	ld a,(de)
+	or a
+	jr nz,@deleteParent
+
+	; Speed returned from @checkForInflection
+	ld hl,w1Link.speedZ
+	ld (hl),c
+	inc l
+	ld (hl),b
+
+	push de
+	ld d,>w1Link
+	ld a,LINK_ANIM_MODE_ROCS_CAPE
+	call specialObjectSetAnimation
+	pop de
+	ld hl,wLinkInAir
+	set 5,(hl)
+	ld a,SND_THROW
+	call playSound
+	jp @deleteParent
+
+
+; @param[out]	zflag	z if inflection reached
+; @param[out]	bc	Vertical speed to use
+@checkForInflection:
+	ld a,(wAntigravState)
+	or a
+	jr nz,@@inverted
 
 	ld hl,w1Link.speedZ
 	ldi a,(hl)
@@ -99,20 +157,81 @@ parentItemCode_feather:
 	ld bc,$0100
 	call compareHlToBc
 	inc a
-	ret z
+	jr z,@@notYet
 
+	ld bc,-$80
+	xor a
+	ret
+
+@@inverted:
 	ld hl,w1Link.speedZ
-	ld (hl),<(-$80)
-	inc l
-	ld (hl),>(-$80)
+	ldi a,(hl)
+	ld h,(hl)
+	bit 7,h
+	jr z,@@notYet
 
-	push de
-	ld d,h
-	ld a,LINK_ANIM_MODE_ROCS_CAPE
-	call specialObjectSetAnimation
-	pop de
-	ld hl,wLinkInAir
-	set 5,(hl)
-	ld a,SND_THROW
-	call playSound
-	jp clearParentItem
+	ld l,a
+	ld bc,-$0100
+	call compareHlToBc
+	dec a
+	jr z,@@notYet
+
+	ld bc,$80
+	xor a
+	ret
+
+@@notYet:
+	or d
+	ret
+
+
+
+@state2:
+	ld a,(wFeatherLevel)
+	cp $03
+	jp c,@deleteParent
+
+	call parentItemCheckButtonPressed
+	jp z,@deleteParent
+
+	; Trigger antigrav
+	ld a,(wTilesetFlags)
+	bit TILESETFLAG_BIT_SIDESCROLL,a
+	jr nz,@sidescroll
+
+	; Top-down
+	ld a,LINK_STATE_BOUNCING_ON_TRAMPOLINE
+	ld (wLinkForceState),a
+	jp @deleteParent
+
+@sidescroll:
+	; Flip antigrav state
+	ld a,(wAntigravState)
+	ld e,a
+	xor 1
+	ld (wAntigravState),a
+
+	; Initial upward/downward speed
+	ld bc,$100
+	jr z,+
+	ld bc,-$100
++
+	ld hl,w1Link.speedZ
+	ld (hl),c
+	inc l
+	ld (hl),b
+
+	; Flip/unflip link sprite
+	ld a,e
+	or a
+	ld b,$40
+	jr z,+
+	ld b,$00
++
+	ld l,<w1Link.oamFlagsBackup
+	ld a,(hl)
+	and ~$40
+	or b
+	ldi (hl),a
+	ld (hl),a
+	jp @deleteParent
