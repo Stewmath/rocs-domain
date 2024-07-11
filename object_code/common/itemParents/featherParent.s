@@ -90,6 +90,8 @@ parentItemCode_feather:
 	ld a,(wLinkInAir)
 	bit 5,a
 	jr nz,@deleteParent
+	or a
+	jr z,@deleteParent
 
 	call parentItemCheckButtonPressed
 	jr nz,++
