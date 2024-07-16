@@ -36,6 +36,16 @@ linkState00:
 	ld a,LINK_ANIM_MODE_WALK
 	call specialObjectSetAnimation
 
+	; Flip link for antigrav
+	ld a,(wAntigravState)
+	or a
+	jr z,++
+	ld a,$48
+	ld e,SpecialObject.oamFlagsBackup
+	ld (de),a
+	inc e
+	ld (de),a
+++
 	; Enable collisions?
 	ld h,d
 	ld l,SpecialObject.collisionType

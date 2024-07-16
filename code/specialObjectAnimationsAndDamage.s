@@ -118,6 +118,22 @@ loadLinkAndCompanionAnimationFrame_body:
 
 @useDirection:
 	ld a,(w1Link.direction)
+	ld c,a
+
+	; Account for antigrav
+	ld a,(wAntigravState)
+	or a
+	jr z,@gotDirection
+
+	; Flip only up/down animations
+	bit 0,c
+	jr nz,@gotDirection
+	ld a,c
+	xor 2
+	ld c,a
+
+@gotDirection:
+	ld a,c
 	add b
 
 @setFrame:
