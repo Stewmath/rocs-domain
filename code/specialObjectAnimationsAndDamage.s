@@ -448,11 +448,16 @@ func_4553:
 @animationFound:
 	ld a,(wLinkClimbingVine)
 	or a
-	jr z,+
+	jr z,++
 
-	xor a
-	ld (w1Link.direction),a
+	ld a,(wAntigravState)
+	or a
+	ld a,DIR_DOWN
+	jr nz,+
+	xor a ; DIR_UP
 +
+	ld (w1Link.direction),a
+++
 	ld a,c
 	add a
 	add a

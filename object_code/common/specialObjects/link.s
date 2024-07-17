@@ -5004,16 +5004,20 @@ calculateAdjacentWallsBitset:
 	ld a,$01
 	ldh (<hFF8B),a
 
-	ld hl,@overworldOffsets
 	ld a,(wTilesetFlags)
 	and TILESETFLAG_SIDESCROLL
-	jr z,@loop
+	ld a,2
+	jr nz,+
+	xor a
++
+	ld hl,wAntigravState
+	or (hl)
 
-	ld a,(wAntigravState)
-	or a
-	ld hl,@sidescrollOffsets
-	jr z,@loop
-	ld hl,@invertedSidescrollOffsets
+	ld hl,@table
+	rst_addDoubleIndex
+	ldi a,(hl)
+	ld h,(hl)
+	ld l,a
 
 ; Loop 8 times
 @loop:
@@ -5043,25 +5047,48 @@ calculateAdjacentWallsBitset:
 	jr nc,@loop
 	ret
 
-; List of YX offsets from Link's position to check for collision at.
-; For each offset where there is a collision, the corresponding bit of 'a' will be set.
-@overworldOffsets:
-	.db -3, -3
-	.db  0,  5
-	.db 10, -5
-	.db  0,  5
-	.db -7, -7
-	.db  5,  0
-	.db -5,  9
-	.db  5,  0
+@table:
+	.dw @overworldOffsets
+	.dw @invertedOverworldOffsets
+	.dw @sidescrollOffsets
+	.dw @invertedSidescrollOffsets
 
-.define REL_X 0
-.define REL_Y 0
 .macro m_RelativeOffset
 	.db \1 - REL_Y, \2 - REL_X
 	.redefine REL_Y, \1
 	.redefine REL_X, \2
 .endm
+
+.define REL_X 0
+.define REL_Y 0
+
+; List of YX offsets from Link's position to check for collision at.
+; For each offset where there is a collision, the corresponding bit of 'a' will be set.
+@overworldOffsets:
+	m_RelativeOffset -3, -3
+	m_RelativeOffset -3, 2
+	m_RelativeOffset 7, -3
+	m_RelativeOffset 7, 2
+	m_RelativeOffset 0, -5
+	m_RelativeOffset 5, -5
+	m_RelativeOffset 0, 4
+	m_RelativeOffset 5, 4
+
+.redefine REL_X 0
+.redefine REL_Y 0
+
+@invertedOverworldOffsets:
+	m_RelativeOffset -7, -3
+	m_RelativeOffset -7, 2
+	m_RelativeOffset 3, -3
+	m_RelativeOffset 3, 2
+	m_RelativeOffset -5, -5
+	m_RelativeOffset 0, -5
+	m_RelativeOffset -5, 4
+	m_RelativeOffset 0, 4
+
+.redefine REL_X 0
+.redefine REL_Y 0
 
 @sidescrollOffsets:
 	m_RelativeOffset -3, -3
