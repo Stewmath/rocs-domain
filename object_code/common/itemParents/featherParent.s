@@ -209,7 +209,6 @@ parentItemCode_feather:
 @sidescroll:
 	; Flip antigrav state
 	ld a,(wAntigravState)
-	ld e,a
 	xor 1
 	ld (wAntigravState),a
 
@@ -223,17 +222,5 @@ parentItemCode_feather:
 	inc l
 	ld (hl),b
 
-	; Flip/unflip link sprite
-	ld a,e
-	or a
-	ld b,$40
-	jr z,+
-	ld b,$00
-+
-	ld l,<w1Link.oamFlagsBackup
-	ld a,(hl)
-	and ~$40
-	or b
-	ldi (hl),a
-	ld (hl),a
+	call updateAntigravState
 	jp @deleteParent

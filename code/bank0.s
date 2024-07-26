@@ -3609,7 +3609,12 @@ updateLinkLocalRespawnPosition:
 	ld a,(wLinkObjectIndex)
 	ld h,a
 	ld l,<w1Link.direction
+	ld a,(wAntigravState)
+	or a
 	ld a,(hl)
+	jr z,+
+	or $80
++
 	ld (wLinkLocalRespawnDir),a
 	ld l,<w1Link.yh
 	ld a,(hl)
@@ -10054,7 +10059,16 @@ specialObjectSetCoordinatesToRespawnYX:
 	ld h,d
 	ld l,SpecialObject.direction
 	ld a,(wLinkLocalRespawnDir)
+	and 3
 	ldi (hl),a
+
+	ld a,(wLinkLocalRespawnDir)
+	bit 7,a
+	ld a,$01
+	jr nz,+
+	xor a
++
+	ld (wAntigravState),a
 
 	; SpecialObject.angle = $ff
 	ld a,$ff
@@ -10077,7 +10091,29 @@ specialObjectSetCoordinatesToRespawnYX:
 
 	ld l,SpecialObject.knockbackCounter
 	ld (hl),a
+
+	; Fall through
+
+;;
+; Call this when wAntigravState changes.
+updateAntigravState:
+	; Flip/unflip link sprite
+	push hl
+	ld a,(wAntigravState)
+	or a
+	ld b,$40
+	jr nz,+
+	ld b,$00
++
+	ld hl,w1Link.oamFlagsBackup
+	ld a,(hl)
+	and ~$40
+	or b
+	ldi (hl),a
+	ld (hl),a
+	pop hl
 	ret
+
 
 ;;
 ; Clear variables related to link's invincibility, knockback, etc.
