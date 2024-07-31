@@ -268,14 +268,26 @@ screenTransitionState2:
 	or a
 	ret nz
 
+	; ANTIGRAV: Allow jumping through screen transitions in sidescrolling rooms (necessary to
+	; allow falling through screen transitions)
+	ld a,(wTilesetFlags)
+	and TILESETFLAG_SIDESCROLL
+	jr z,+
+	ld a,b
+	and (BTN_UP | BTN_DOWN)
+	jr z,+
+	ld b,$ff
+	jr @counterZero
++
 	; Don't transition until this counter reaches 0
 	ld a,(wScreenTransitionDelay)
 	or a
-	jr z,+
+	jr z,@counterZero
 	dec a
 	ld (wScreenTransitionDelay),a
 	ret
-+
+
+@counterZero:
 	ld a,(w1Companion.id)
 	cp SPECIALOBJECT_MINECART
 	jr z,@startTransition
@@ -300,6 +312,11 @@ screenTransitionState2:
 	ld a,(wcc92)
 	add a
 	jr nz,+
+
+	; ANTIGRAV: Skip direction checks if falling in sidescroll room
+	ld a,b
+	inc a
+	jr z,+
 
 	; Check that Link is moving toward the boundary
 	call convertLinkAngleToDirectionButtons
