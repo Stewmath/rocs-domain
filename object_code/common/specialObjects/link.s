@@ -381,7 +381,23 @@ warpTransition5_01:
 .endif
 .endif
 
+	; ANTIGRAV: Go back if landed on something solid
+	ld h,>wRoomCollisions
+	ld a,(hl)
+	and $0f
+	jr z,++
+
+	ld a,SND_SCENT_SEED
+	call playSound
+
+	ld a,LINK_STATE_BOUNCING_ON_TRAMPOLINE
+	ld (wLinkForceState),a
+	call checkLinkForceState
+	; Does not return
+
+++
 	; If he didn't fall into a hazard, make link "collapse" when he lands.
+	call objectGetTileAtPosition
 	ld hl,hazardCollisionTable
 	call lookupCollisionTable
 	jp nc,warpTransition7@linkCollapsed
@@ -1443,7 +1459,7 @@ linkState02:
 
 	ld a,(wActiveTileType)
 	cp TILETYPE_WARPHOLE
-	jr nz,@respawn
+	jr nz,@notWarpHole
 
 .ifdef ROM_AGES
 	; Check if the current room is the moblin keep with the crumbling floors
@@ -1468,6 +1484,47 @@ linkState02:
 .endif
 	; This function call will only work in dungeons.
 	jpab bank1.initiateFallDownHoleWarp
+
+@notWarpHole:
+	; ANTIGRAV: Go back to previous room if we landed on a hole
+	ld a,(wLinkLocalRespawnY)
+	ld b,a
+	ld a,(wLinkLocalRespawnX)
+	ld c,a
+	ld a,(w1Link.yh)
+	cp b
+	jr nz,@respawn
+	ld a,(w1Link.xh)
+	cp c
+	jr nz,@respawn
+
+	ld a,(wDungeonFloor)
+	xor 1
+	ld (wDungeonFloor),a
+
+	call getActiveRoomFromDungeonMapPosition
+	ld (wWarpDestRoom),a
+
+	ld a,(wRememberedCompanionY) ; Misusing this to remember last room's respawn position
+	ld (wWarpDestPos),a
+
+	ld a,(wActiveGroup)
+	or $80
+	ld (wWarpDestGroup),a
+	ld a,TRANSITION_DEST_BASIC
+	ld (wWarpTransition),a
+	ld a,$03
+	ld (wWarpTransition2),a
+
+	ld hl,wLinkHealth
+	ld a,(hl)
+	sub 2
+	jr nc,+
+	xor a
++
+	ld (wLinkHealth),a
+	ret
+
 
 @respawn:
 	call specialObjectSetCoordinatesToRespawnYX
@@ -1699,9 +1756,12 @@ linkState09:
 @substate1:
 	call @seasonsFunc_05_5043
 	ret c
+
+	; ANTIGRAV: Alternate between floors 0 and 1.
 	ld a,(wDungeonFloor)
-	inc a
+	xor 1
 	ld (wDungeonFloor),a
+
 	call getActiveRoomFromDungeonMapPosition
 	ld (wWarpDestRoom),a
 	call objectGetShortPosition
@@ -1709,7 +1769,7 @@ linkState09:
 	ld a,(wActiveGroup)
 	or $80
 	ld (wWarpDestGroup),a
-	ld a,$06
+	ld a,TRANSITION_DEST_FALL
 	ld (wWarpTransition),a
 	ld a,$03
 	ld (wWarpTransition2),a

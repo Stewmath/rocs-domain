@@ -864,6 +864,8 @@ label_01_037:
 	ld a,(wLinkObjectIndex)
 	ld h,a
 
+	call antigravUpdateRespawn
+
 	ld l,<w1Link.yh
 	ld a,(de)
 	add (hl)
@@ -877,13 +879,6 @@ label_01_037:
 	ld (hl),a
 	ld (wLinkLocalRespawnX),a
 
-	ld l,<w1Link.direction
-	ld a,(wAntigravState)
-	or a
-	ld a,(hl)
-	jr z,+
-	or $80
-+
 	ld (wLinkLocalRespawnDir),a
 	srl h
 	jr nc,+

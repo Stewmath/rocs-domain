@@ -3608,13 +3608,11 @@ func_1135:
 updateLinkLocalRespawnPosition:
 	ld a,(wLinkObjectIndex)
 	ld h,a
+
+	call antigravUpdateRespawn
+
 	ld l,<w1Link.direction
-	ld a,(wAntigravState)
-	or a
 	ld a,(hl)
-	jr z,+
-	or $80
-+
 	ld (wLinkLocalRespawnDir),a
 	ld l,<w1Link.yh
 	ld a,(hl)
@@ -3623,6 +3621,36 @@ updateLinkLocalRespawnPosition:
 	ld a,(hl)
 	ld (wLinkLocalRespawnX),a
 	ret
+
+; Called when wLinkLocalRespawn variables are updated
+antigravUpdateRespawn:
+	push bc
+	push de
+	push hl
+	ld l,<w1Link.direction
+	ld a,(wAntigravState)
+	or a
+	ld a,(hl)
+	jr z,+
+	or $80
++
+	ld hl,wLinkLocalRespawnY
+	ldi a,(hl)
+	and $f0
+	ld b,a
+	inc e
+	inc e
+	ld a,(hl)
+	swap a
+	and $0f
+	or b
+	ld (wRememberedCompanionY),a ; Misusing this to remember last room's respawn position
+
+	pop hl
+	pop de
+	pop bc
+	ret
+
 
 ;;
 ; Updates room flags when a tile is broken. For some tiles, this involves setting the room
