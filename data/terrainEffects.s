@@ -2,6 +2,10 @@ shadowAnimation:
 	.db $01
 	.db $13 $04 $20 $08
 
+shadowAnimationFlipped:
+	.db $01
+	.db $07 $04 $20 $08
+
 greenGrassAnimationFrame0:
 	.db $02
 	.db $11 $01 $24 $08

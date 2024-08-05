@@ -1668,7 +1668,9 @@ wInteractionIDToLoadExtraGfx: ; $cc1e/$cc1d
 .ifdef ROM_SEASONS
 
 wAntigravState: ; -/$cc1e
-; $00 = normal, $01 = flipped (sidescrolling)
+; $00 = normal
+; $01 = flipped (sidescrolling)
+; $02 = flipped (overworld)
 	db
 .endif
 

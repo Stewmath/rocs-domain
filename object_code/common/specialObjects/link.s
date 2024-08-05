@@ -5064,14 +5064,20 @@ calculateAdjacentWallsBitset:
 	ld a,$01
 	ldh (<hFF8B),a
 
+	push bc
 	ld a,(wTilesetFlags)
 	and TILESETFLAG_SIDESCROLL
-	ld a,2
+	ld b,2
 	jr nz,+
-	xor a
+	ld b,0
 +
-	ld hl,wAntigravState
-	or (hl)
+	ld a,(wAntigravState)
+	or a
+	jr z,+
+	ld a,1
++
+	or b
+	pop bc
 
 	ld hl,@table
 	rst_addDoubleIndex

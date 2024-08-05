@@ -3103,6 +3103,7 @@ _drawObjectTerrainEffects:
 
 	; Add an entry to wTerrainEffectsBuffer to queue a shadow for drawing
 	push hl
+	push de
 	ldh a,(<hTerrainEffectsBufferUsedSize)
 	add <wTerrainEffectsBuffer
 	ld l,a
@@ -3111,13 +3112,22 @@ _drawObjectTerrainEffects:
 	ldi (hl),a
 	ldh a,(<hFF8D)
 	ldi (hl),a
-	ld a,<terrainEffects.shadowAnimation
-	ldi (hl),a
-	ld a,>terrainEffects.shadowAnimation
-	ldi (hl),a
+
+	; ANTIGRAV: Adjust shadow position
+	ld a,(wAntigravState)
+	or a
+	ld de,terrainEffects.shadowAnimation
+	jr z,+
+	ld de,terrainEffects.shadowAnimationFlipped
++
+	ld (hl),e
+	inc hl
+	ld (hl),d
+	inc hl
 	ld a,l
 	sub <wTerrainEffectsBuffer
 	ldh (<hTerrainEffectsBufferUsedSize),a
+	pop de
 	pop hl
 	ret
 
@@ -3256,8 +3266,17 @@ _getObjectPositionOnScreen:
 	call c,_drawObjectTerrainEffects
 
 	; Account for Z position
+	; ANTIGRAV: Z position makes objects go down when flipped on overworld
+	ld a,(wAntigravState)
+	cp 2
+	jr nz,+
+	ld a,d
+	sub e
+	jr ++
++
 	ld a,d
 	add e
+++
 	ldh (<hFF8C),a
 
 	; Point hl to the Object.oamFlags variable
@@ -11033,6 +11052,19 @@ initializeRoom:
 .endif
 
 	callfrombank0 staticObjects.parseStaticObjects
+
+	; ANTIGRAV:
+	ld a,(wAntigravState)
+	or a
+	jr z,++
+	ld a,(wTilesetFlags)
+	and TILESETFLAG_BIT_SIDESCROLL
+	ld a,1
+	jr nz,+
+	ld a,2
++
+	ld (wAntigravState),a
+++
 
 	pop af
 	setrombank

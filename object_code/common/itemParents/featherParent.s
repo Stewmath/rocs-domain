@@ -146,8 +146,8 @@ parentItemCode_feather:
 ; @param[out]	bc	Vertical speed to use
 @checkForInflection:
 	ld a,(wAntigravState)
-	or a
-	jr nz,@@inverted
+	cp 1
+	jr z,@@inverted
 
 	ld hl,w1Link.speedZ
 	ldi a,(hl)
