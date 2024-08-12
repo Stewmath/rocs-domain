@@ -1502,6 +1502,15 @@ linkState02:
 	xor 1
 	ld (wDungeonFloor),a
 
+	; Invert antigrav state
+	ld a,(wAntigravState)
+	or a
+	ld a,2
+	jr z,+
+	xor a
++
+	ld (wAntigravState),a
+
 	call getActiveRoomFromDungeonMapPosition
 	ld (wWarpDestRoom),a
 
@@ -1761,6 +1770,15 @@ linkState09:
 	ld a,(wDungeonFloor)
 	xor 1
 	ld (wDungeonFloor),a
+
+	; Invert antigrav state
+	ld a,(wAntigravState)
+	or a
+	ld a,2
+	jr z,+
+	xor a
++
+	ld (wAntigravState),a
 
 	call getActiveRoomFromDungeonMapPosition
 	ld (wWarpDestRoom),a
@@ -5285,9 +5303,15 @@ linkPullIntoHole:
 	ret
 
 @moveVertical:
+	ld a,(wAntigravState)
+	cp 2
+	ld c,$05
+	jr nz,+
+	ld c,-$05
++
 	ld l,SpecialObject.yh
 	ld a,(hl)
-	add $05
+	add c
 	and $f0
 	add $08
 	sub (hl)

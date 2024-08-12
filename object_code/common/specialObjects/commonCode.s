@@ -427,7 +427,13 @@ linkApplyTileTypes:
 ; @param[out]	a	Tile type
 ; @param[out]	b	Former value of wActiveTilePos
 @linkGetActiveTileType:
+	; ANTIGRAV: Adjust offset based on whether it's active
 	ld bc,$0500
+	ld a,(wAntigravState)
+	cp 2
+	jr nz,+
+	ldbc -$05, $00
++
 	call objectGetRelativeTile
 	ld c,a
 	ld b,l

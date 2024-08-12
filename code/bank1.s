@@ -864,8 +864,6 @@ label_01_037:
 	ld a,(wLinkObjectIndex)
 	ld h,a
 
-	call antigravUpdateRespawn
-
 	ld l,<w1Link.yh
 	ld a,(de)
 	add (hl)
@@ -879,6 +877,8 @@ label_01_037:
 	ld (hl),a
 	ld (wLinkLocalRespawnX),a
 
+	ld l,<w1Link.direction
+	ld a,(hl)
 	ld (wLinkLocalRespawnDir),a
 	srl h
 	jr nc,+
@@ -889,6 +889,8 @@ label_01_037:
 	ld a,(wLinkLocalRespawnX)
 	ld (hl),a
 +
+	call antigravUpdateRespawn
+
 	xor a
 	ldh (<hCameraY),a
 	ldh (<hCameraX),a

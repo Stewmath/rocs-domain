@@ -3628,8 +3628,6 @@ updateLinkLocalRespawnPosition:
 	ld a,(wLinkObjectIndex)
 	ld h,a
 
-	call antigravUpdateRespawn
-
 	ld l,<w1Link.direction
 	ld a,(hl)
 	ld (wLinkLocalRespawnDir),a
@@ -3639,14 +3637,15 @@ updateLinkLocalRespawnPosition:
 	ld l,<w1Link.xh
 	ld a,(hl)
 	ld (wLinkLocalRespawnX),a
-	ret
+
+	; Fall through
 
 ; Called when wLinkLocalRespawn variables are updated
 antigravUpdateRespawn:
 	push bc
 	push de
 	push hl
-	ld l,<w1Link.direction
+	ld hl,w1Link.direction
 	ld a,(wAntigravState)
 	or a
 	ld a,(hl)
@@ -3664,6 +3663,13 @@ antigravUpdateRespawn:
 	and $0f
 	or b
 	ld (wRememberedCompanionY),a ; Misusing this to remember last room's respawn position
+
+	ld a,(wAntigravState)
+	or a
+	jr z,++
+	ld hl,wLinkLocalRespawnDir
+	set 7,(hl)
+++
 
 	pop hl
 	pop de
@@ -10111,10 +10117,16 @@ specialObjectSetCoordinatesToRespawnYX:
 
 	ld a,(wLinkLocalRespawnDir)
 	bit 7,a
-	ld a,$01
-	jr nz,+
-	xor a
+	ld b,$00
+	jr z,++
+	inc b
 +
+	ld a,(wTilesetFlags)
+	and TILESETFLAG_SIDESCROLL
+	jr nz,++
+	inc b
+++
+	ld a,b
 	ld (wAntigravState),a
 
 	; SpecialObject.angle = $ff
