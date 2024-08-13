@@ -28,6 +28,7 @@ enemyCode32:
 
 @normalState:
 	ld a,b
+	and $7f
 	rst_jumpTable
 	.dw keese_subid00
 	.dw keese_subid01
@@ -36,7 +37,20 @@ enemyCode32:
 keese_state_uninitialized:
 	call ecom_setSpeedAndState8
 	call keese_initializeSubid
-	jp objectSetVisible82
+	call objectSetVisible82
+
+	; ANTIGRAV: Bit 7 of subid = flipped keese
+	ld e,Enemy.subid
+	ld a,(de)
+	and $80
+	ret z
+	ld e,Enemy.oamFlagsBackup
+	ld a,(de)
+	xor $40
+	ld (de),a
+	inc e
+	;ld (de),a ; oamFlagsBackup
+	ret
 
 
 keese_state_stub:
@@ -241,7 +255,9 @@ keese_updateDeceleration:
 
 ;;
 keese_initializeSubid:
-	dec b
+	ld a,b
+	and $7f
+	dec a
 	jr z,@subid1
 
 @subid0:
