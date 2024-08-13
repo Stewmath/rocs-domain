@@ -127,7 +127,15 @@ updateLinkInvincibilityCounter:
 
 	; Set Link's palette to red
 	ld l,SpecialObject.oamFlags
-	ld (hl),$0d
+
+	; ANTIGRAV: Account for flipY
+	ld a,(wAntigravState)
+	or a
+	ld a,$0d
+	jr z,+
+	ld a,$4d
++
+	ld (hl),a
 	ret
 
 @incCounter:
