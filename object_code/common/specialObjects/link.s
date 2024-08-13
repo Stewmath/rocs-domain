@@ -3876,6 +3876,8 @@ linkState01_sidescroll:
 	ld a,(wActiveTileIndex)
 	cp TILEINDEX_SS_SPIKE
 	call z,dealSpikeDamageToLink
+	cp TILEINDEX_SS_SPIKE_2
+	call z,dealSpikeDamageToLink
 
 	ld a,(wForceIcePhysics)
 	or a
@@ -4378,6 +4380,8 @@ linkUpdateInAir_sidescroll:
 	ld a,(wActiveTileIndex)
 	cp TILEINDEX_SS_SPIKE
 	call z,dealSpikeDamageToLink
+	cp TILEINDEX_SS_SPIKE_2
+	call z,dealSpikeDamageToLink
 
 	ld a,SND_LAND
 	call playSound
@@ -4583,6 +4587,8 @@ linkUpdateInAir_sidescroll_inverted:
 	; Check if he landed on a spike
 	ld a,(wActiveTileIndex)
 	cp TILEINDEX_SS_SPIKE
+	call z,dealSpikeDamageToLink
+	cp TILEINDEX_SS_SPIKE_2
 	call z,dealSpikeDamageToLink
 
 	ld a,SND_LAND

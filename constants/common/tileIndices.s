@@ -200,3 +200,6 @@
 .define TILEINDEX_SS_LADDER		$18
 .define TILEINDEX_SS_52			$52
 
+
+; Hackathon-2024
+.define TILEINDEX_SS_SPIKE_2		$80
