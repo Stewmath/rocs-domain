@@ -2941,8 +2941,31 @@ drawAllSpritesUnconditionally:
 	or a
 	jr z,@return
 
+	; ANTIGRAV: Adjust OAM data if bit 7 is set. Next 2 bytes contain Y/X offsets.
+	bit 7,a
+	jr z,++
+	ld c,a
+	ld a,(wAntigravState)
+	or a
+	jr nz,+
+	res 7,c
+	inc hl
+	inc hl
+	jr @doneAntigrav
++
+	ldh a,(<hFF8C)
+	add (hl)
+	ldh (<hFF8C),a
+	inc hl
+	ldh a,(<hFF8D)
+	add (hl)
+	ldh (<hFF8D),a
+	inc hl
+	jr @doneAntigrav
+++
 	ld c,a
 
+@doneAntigrav:
 	; Get first available OAM index, or return if it's full
 	ldh a,(<hOamTail)
 	ld e,a
@@ -2958,7 +2981,7 @@ drawAllSpritesUnconditionally:
 
 	ld d,>wOam
 	; b = # available slots,
-	; c = # sprites to be drawn,
+	; c = # sprites to be drawn (ANTIGRAV: Bit 7 set to indicate flipping)
 	; de points to OAM,
 	; hl points to animation frame data
 
@@ -2992,6 +3015,11 @@ drawAllSpritesUnconditionally:
 	inc e
 	ldh a,(<hFF8F)
 	xor (hl)
+	; ANTIGRAV: Uncomment this to toggle flip Y flag when bit 7 is set
+	;bit 7,c
+	;jr z,+
+	;xor $40
++
 	ld (de),a
 
 	inc hl
@@ -3000,6 +3028,8 @@ drawAllSpritesUnconditionally:
 	jr z,@doneDrawing
 
 	dec c
+	ld a,c
+	and $7f
 	jr nz,@nextSprite
 
 @doneDrawing:

@@ -33,11 +33,11 @@ itemOamData4cf64:
 	.db $01
 	.db $08 $04 $02 $40
 
-itemOamData4cf69:
+itemOamData_swordUp:
 	.db $01
 	.db $08 $04 $04 $00
 
-itemOamData4cf6e:
+itemOamData_swordDown:
 	.db $01
 	.db $08 $04 $04 $40
 
@@ -77,12 +77,12 @@ itemOamData4cfa2:
 	.db $08 $00 $02 $40
 	.db $08 $08 $02 $60
 
-itemOamData4cfab:
+itemOamData_swordLeft:
 	.db $02
 	.db $08 $00 $00 $00
 	.db $08 $08 $02 $00
 
-itemOamData4cfb4:
+itemOamData_swordRight:
 	.db $02
 	.db $08 $00 $02 $20
 	.db $08 $08 $00 $20
@@ -117,22 +117,22 @@ itemOamData4cfea:
 	.db $08 $00 $0a $20
 	.db $08 $08 $08 $20
 
-itemOamData4cff3:
+itemOamData_swordUpLeft:
 	.db $02
 	.db $08 $00 $06 $00
 	.db $08 $08 $08 $00
 
-itemOamData4cffc:
+itemOamData_swordUpRight:
 	.db $02
 	.db $08 $00 $08 $20
 	.db $08 $08 $06 $20
 
-itemOamData4d005:
+itemOamData_swordDownLeft:
 	.db $02
 	.db $08 $00 $06 $40
 	.db $08 $08 $08 $40
 
-itemOamData4d00e:
+itemOamData_swordDownRight:
 	.db $02
 	.db $08 $00 $08 $60
 	.db $08 $08 $06 $60

@@ -36,18 +36,23 @@ oamData4803b:
 	.db $01
 	.db $08 $04 $00 $40
 
+; Link with sword out facing up, jutting forward
+; ANTIGRAV: Conditionally adjust offset when inverted
 oamData48040:
-	.db $02
+	.db $82, 6, 0
 	.db $05 $00 $00 $00
 	.db $05 $08 $02 $00
 
+; Link with sword out facing right, jutting forward
 oamData48049:
 	.db $02
 	.db $08 $03 $02 $20
 	.db $08 $0b $00 $20
 
+; Link with sword out facing down, jutting forward
+; ANTIGRAV: Conditionally adjust offset when inverted
 oamData48052:
-	.db $02
+	.db $82, -6, 0
 	.db $0b $00 $00 $00
 	.db $0b $08 $02 $00
 

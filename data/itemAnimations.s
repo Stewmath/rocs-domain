@@ -366,14 +366,14 @@ item11OamDataPointers: ; 0x1e8bc
 item04OamDataPointers: ; 0x1e8ca
 item05OamDataPointers: ; 0x1e8ca
 item07OamDataPointers: ; 0x1e8ca
-	.dw itemOamData4cf69
-	.dw itemOamData4cffc
-	.dw itemOamData4cfb4
-	.dw itemOamData4d00e
-	.dw itemOamData4cf6e
-	.dw itemOamData4d005
-	.dw itemOamData4cfab
-	.dw itemOamData4cff3
+	.dw itemOamData_swordUp
+	.dw itemOamData_swordUpRight
+	.dw itemOamData_swordRight
+	.dw itemOamData_swordDownRight
+	.dw itemOamData_swordDown
+	.dw itemOamData_swordDownLeft
+	.dw itemOamData_swordLeft
+	.dw itemOamData_swordUpLeft
 
 item06OamDataPointers: ; 0x1e8da
 	.dw itemOamData4cf99
@@ -434,8 +434,8 @@ item21OamDataPointers: ; 0x1e92c
 	.dw itemOamData4cfbd
 	.dw itemOamData4cf87
 	.dw itemOamData4cf99
-	.dw itemOamData4cfab
-	.dw itemOamData4cfb4
+	.dw itemOamData_swordLeft
+	.dw itemOamData_swordUpRight
 
 item22OamDataPointers: ; 0x1e938
 item24OamDataPointers: ; 0x1e938
@@ -448,12 +448,12 @@ item26OamDataPointers: ; 0x1e938
 
 item23OamDataPointers: ; 0x1e940
 	.dw itemOamData4cf41
-	.dw itemOamData4cfab
-	.dw itemOamData4cfb4
+	.dw itemOamData_swordLeft
+	.dw itemOamData_swordUpRight
 
 item16OamDataPointers: ; 0x1e946
 	.dw itemOamData4cf87
-	.dw itemOamData4cfab
+	.dw itemOamData_swordLeft
 
 item27OamDataPointers: ; 0x1e94a
 	.dw itemOamData4cf5a
@@ -479,7 +479,7 @@ item13OamDataPointers: ; 0x1e962
 
 item0aOamDataPointers: ; 0x1e96a
 	.dw itemOamData4cf87
-	.dw itemOamData4cfab
+	.dw itemOamData_swordLeft
 	.dw itemOamData4cf90
 	.dw itemOamData4cfa2
 	.dw itemOamData4cfe1
@@ -516,12 +516,12 @@ item1dOamDataPointers: ; 0x1e992
 item1fOamDataPointers: ; 0x1e992
 item28OamDataPointers: ; 0x1e992
 item29OamDataPointers: ; 0x1e992
-	.dw itemOamData4cfab
+	.dw itemOamData_swordLeft
 	.dw itemOamData4cfcf
 
 item2aOamDataPointers: ; 0x1e996
-	.dw itemOamData4cfab
-	.dw itemOamData4cfb4
+	.dw itemOamData_swordLeft
+	.dw itemOamData_swordUpRight
 
 item2bOamDataPointers: ; 0x1e99a
 item2cOamDataPointers: ; 0x1e99a
