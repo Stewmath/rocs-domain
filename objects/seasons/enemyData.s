@@ -1109,7 +1109,6 @@ group4Map15EnemyObjectData:
 	obj_EndPointer
 
 group4Map17EnemyObjectData:
-	obj_SpecificEnemyA $00 $35 $00 $40 $00
 	obj_EndPointer
 
 group4Map18EnemyObjectData:
@@ -1123,8 +1122,6 @@ group4Map19EnemyObjectData:
 	obj_EndPointer
 
 group4Map1aEnemyObjectData:
-	obj_SpecificEnemyA $03 $59 $00 $98 $58
-	obj_SpecificEnemyA     $59 $00 $98 $98
 	obj_EndPointer
 
 group4Map1bEnemyObjectData:
@@ -1381,7 +1378,6 @@ group4Map50EnemyObjectData:
 group4Map52EnemyObjectData:
 	obj_RandomEnemy $40 $4d $00
 	obj_RandomEnemy $60 $34 $00
-	obj_Garbage $58 $88 ; Garbage opcode (ignored)
 	obj_EndPointer
 
 group4Map53BeforeEventObjectData:

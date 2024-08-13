@@ -335,7 +335,7 @@ group4WarpDestTable:
 	m_WarpDest $a7 $ff $9 $3
 	m_WarpDest $ba $ff $9 $3
 	m_WarpDest $07 $79 $0 $4
-	m_WarpDest $0a $57 $0 $4
+	m_WarpDest $16 $24 $0 $4
 	m_WarpDest $1f $11 $0 $4
 	m_WarpDest $32 $5b $0 $4
 	m_WarpDest $33 $91 $0 $4
@@ -615,6 +615,7 @@ group6WarpDestTable:
 	m_WarpDest $87 $0d $f $3
 	m_WarpDest $a8 $01 $f $3
 	m_WarpDest $a9 $0d $f $3
+	m_WarpDest $09 $57 $0 $4
 
 group7WarpDestTable:
 	m_WarpDest $5c $02 $f $3

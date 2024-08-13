@@ -2392,7 +2392,6 @@ group4Map15ObjectData:
 	obj_End
 
 group4Map16ObjectData:
-	obj_Interaction $38 $00 $38 $78
 	obj_End
 
 group4Map17ObjectData:
@@ -2411,10 +2410,6 @@ group4Map19ObjectData:
 	obj_End
 
 group4Map1aObjectData:
-	obj_Interaction $13 $01 $38 $98
-	obj_Interaction $1e $08 $07 $00
-	obj_Interaction $1e $09 $5e $00
-	obj_Interaction $1e $0a $a7 $00
 	obj_Pointer group4Map1aEnemyObjectData
 	obj_End
 
