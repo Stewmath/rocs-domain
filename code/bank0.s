@@ -11095,12 +11095,12 @@ initializeRoom:
 
 	callfrombank0 staticObjects.parseStaticObjects
 
-	; ANTIGRAV:
+	; ANTIGRAV: Update when moving between rooms (1 for top-down, 2 for sidescroll)
 	ld a,(wAntigravState)
 	or a
 	jr z,++
 	ld a,(wTilesetFlags)
-	and TILESETFLAG_BIT_SIDESCROLL
+	and TILESETFLAG_SIDESCROLL
 	ld a,1
 	jr nz,+
 	ld a,2
