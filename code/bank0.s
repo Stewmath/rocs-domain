@@ -6882,6 +6882,7 @@ objectUpdateSpeedZ_paramC:
 objectUpdateSpeedZ_sidescroll:
 	ld b,$06
 
+
 ;;
 ; @param	a	Gravity (amount to add to Object.speedZ)
 ; @param	b	Y offset for collision check
@@ -6898,6 +6899,7 @@ objectUpdateSpeedZ_sidescroll_givenYOffset:
 
 ; speedZ is positive; return with carry flag set if the object collides with a tile.
 
+@checkCollision:
 	; Set b to object's y position (plus offset)
 	add Object.yh-(Object.speedZ+1)
 	ld l,a
@@ -6944,6 +6946,74 @@ objectUpdateSpeedZ_sidescroll_givenYOffset:
 	; Clear carry flag
 	or d
 	ret
+
+
+; ANTIGRAV: Cloned version of above function for objects that should have inverted vertical movement
+; (thwimps in some cases)
+objectUpdateSpeedZ_sidescroll_givenYOffset_antigrav:
+	ldh (<hFF8B),a
+	ld a,b
+	cpl
+	inc a
+	ld b,a
+
+	ldh a,(<hActiveObjectType)
+	add Object.speedZ+1
+	ld l,a
+	ld h,d
+	bit 7,(hl)
+	jr z,@notLanded
+
+@checkCollision:
+	; Set b to object's y position (plus offset)
+	add Object.yh-(Object.speedZ+1)
+	ld l,a
+	ldi a,(hl)
+	add b
+	ld b,a
+
+	; hl = Object.xh
+	inc l
+	ld a,(hl)
+
+	; Check left side of object (assumes 8 pixel width?)
+	sub $04
+	ld c,a
+	call checkTileCollisionAt_allowHoles
+	ret c
+
+	; Check right side of object (assumes 8 pixel width?)
+	ld a,c
+	add $07
+	ld c,a
+	call checkTileCollisionAt_allowHoles
+	ret c
+
+@notLanded:
+	; Add speedZ to y position
+	ldh a,(<hActiveObjectType)
+	add Object.y
+	ld e,a
+	add Object.speedZ-Object.y
+	ld l,a
+	ld h,d
+	call add16BitRefs
+
+	; Apply gravity (decrease speedZ by amount passed to function)
+	dec l
+	ldh a,(<hFF8B)
+	ld b,a
+	ld a,(hl)
+	sub b
+	ldi (hl),a
+	ld a,(hl)
+	sbc $00
+	ld (hl),a
+
+	; Clear carry flag
+	or d
+	ret
+
 
 ;;
 ; Checks if Link is within the distance given to the object (valid area is a square).

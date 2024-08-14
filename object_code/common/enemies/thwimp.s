@@ -29,6 +29,16 @@ enemyCode2e:
 
 
 @state_uninitialized:
+	; ANTIGRAV: Bit 7 of subid = flipped thwimp
+	ld e,Enemy.subid
+	ld a,(de)
+	and $80
+	jr z,++
+	ld e,Enemy.oamFlagsBackup
+	ld a,(de)
+	xor $40
+	ld (de),a
+++
 	ld e,Enemy.yh
 	ld a,(de)
 	ld e,Enemy.var30
@@ -81,15 +91,36 @@ enemyCode2e:
 
 ; Falling down
 @stateA:
+	ld e,Enemy.subid
+	ld a,(de)
+	and $80
 	ld a,$40
-	call objectUpdateSpeedZ_sidescroll
+	ld b,$06
+	jr z,+
+	call objectUpdateSpeedZ_sidescroll_givenYOffset_antigrav
+	jr ++
++
+	call objectUpdateSpeedZ_sidescroll_givenYOffset
+++
 	jr c,@landed
+
+	ld e,Enemy.subid
+	ld a,(de)
+	and $80
+	jr nz,@@antigrav
 
 	; Cap speedZ to $0200 (ish... doesn't fix the low byte)
 	ld a,(hl)
 	cp $03
 	ret c
 	ld (hl),$02
+	ret
+
+@@antigrav:
+	ld a,(hl)
+	cp -$03
+	ret nc
+	ld (hl),-$02
 	ret
 
 @landed:
@@ -109,6 +140,11 @@ enemyCode2e:
 
 ; Moving back up at constant speed
 @stateC:
+	ld e,Enemy.subid
+	ld a,(de)
+	and $80
+	jr nz,@@antigrav
+
 	ld h,d
 	ld l,Enemy.y
 	ld a,(hl)
@@ -118,6 +154,7 @@ enemyCode2e:
 	sbc $00
 	ld (hl),a
 
+@@common:
 	ld e,Enemy.var30
 	ld a,(de)
 	cp (hl)
@@ -128,3 +165,14 @@ enemyCode2e:
 	ld l,Enemy.state
 	ld (hl),$08
 	ret
+
+@@antigrav:
+	ld h,d
+	ld l,Enemy.y
+	ld a,(hl)
+	add $80
+	ldi (hl),a
+	ld a,(hl)
+	adc $00
+	ld (hl),a
+	jr @@common
