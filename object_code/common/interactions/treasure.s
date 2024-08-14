@@ -48,12 +48,46 @@ interactionCode60:
 	ld (hl),a
 +
 	call interactionInitGraphics
+	call @checkFlippedTreasure
 
 	ld e,Interaction.var31
 	ld a,(de)
 	or a
 	ret nz
 	jp objectSetVisiblec2
+
+
+; ANTIGRAV: Certain treasures are hardcoded to be flipped
+@checkFlippedTreasure:
+	ld e,Interaction.var30
+	ld a,(de)
+	ld b,a
+	ld e,Interaction.var03
+	ld a,(de)
+	ld c,a
+	ld hl,@flippedTreasures
+@loop:
+	ldi a,(hl)
+	or a
+	ret z
+	cp b
+	jr z,+
+	inc hl
+	jr @loop
++
+	ldi a,(hl)
+	cp c
+	jr nz,@loop
+
+	ld e,Interaction.oamFlags
+	ld a,(de)
+	xor $40
+	ld (de),a
+	ret
+
+@flippedTreasures:
+	.db TREASURE_SMALL_KEY, $04
+	.db $00
 
 
 ; State 1: spawning in; goes to state 2 when finished spawning.
@@ -429,7 +463,14 @@ interactionCode60:
 	ld hl,wDisabledObjects
 	set 0,(hl)
 	ld hl,w1Link
-	ld b,$f2
+
+	; ANTIGRAV: Adjust position to place item at
+	ld a,(wAntigravState)
+	or a
+	ld b,-14
+	jr z,+
+	ld b,14
++
 	call objectTakePositionWithOffset
 	call objectSetVisible80
 	ld a,SND_GETITEM

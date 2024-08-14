@@ -62,10 +62,7 @@ interactionCode20:
 	.dw mainScripts.dungeonScript_checkActiveTriggersEq01
 
 @dungeon1:
-	.dw mainScripts.dungeonScript_minibossDeath
-	.dw mainScripts.dungeonScript_checkActiveTriggersEq01
-	.dw mainScripts.dungeonScript_checkActiveTriggersEq01
-	.dw mainScripts.dungeonScript_bossDeath
+	.dw mainScripts.rocsScript_smallKey
 
 @dungeon2:
 	.dw mainScripts.snakesRemainsScript_timerForChestDisappearing

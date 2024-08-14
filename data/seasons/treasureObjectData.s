@@ -276,6 +276,7 @@ treasureObjectData30:
 	m_TreasureSubid $28, $01, $ff, $42, TREASURE_OBJECT_SMALL_KEY_01
 	m_TreasureSubid $49, $01, $1a, $42, TREASURE_OBJECT_SMALL_KEY_02
 	m_TreasureSubid $38, $01, $1a, $42, TREASURE_OBJECT_SMALL_KEY_03
+	m_TreasureSubid $09, $00, $1a, $42, TREASURE_OBJECT_SMALL_KEY_04
 
 treasureObjectData31:
 	m_BeginTreasureSubids TREASURE_BOSS_KEY

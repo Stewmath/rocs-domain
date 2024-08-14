@@ -533,3 +533,9 @@ herosCaveScript_allButtonsPressedAndEnemiesDefeated:
 	checknoenemies
 	spawnitem TREASURE_SMALL_KEY, $01
 	scriptend
+
+
+rocsScript_smallKey:
+	stopifitemflagset
+	spawnitem TREASURE_SMALL_KEY, $04
+	scriptend
