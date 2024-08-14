@@ -79,8 +79,8 @@ crow_subid0_state8:
 	ld l,Enemy.xh
 	ldh a,(<hEnemyTargetX)
 	sub (hl)
-	add $18
-	cp $31
+	add $20
+	cp $41
 	ret nc
 
 	; Link has approached.
