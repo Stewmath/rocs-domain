@@ -33,6 +33,7 @@ enemyCode2b:
 
 @normalState:
 	ld a,b
+	and $7f
 	rst_jumpTable
 	.dw bladeTrap_subid00
 	.dw bladeTrap_subid01
@@ -51,6 +52,7 @@ enemyCode2b:
 	; Set different animation and var3e value for the spinning trap
 	ld e,Enemy.subid
 	ld a,(de)
+	and $7f
 	or a
 	ld a,$08
 	jr nz,++
@@ -160,6 +162,7 @@ bladeTrap_subid02:
 
 	ld l,Enemy.subid
 	ld a,(hl)
+	and $7f
 	dec a
 	ld a,SPEED_180
 	jr z,+
@@ -301,6 +304,17 @@ bladeTrap_subid05:
 	call bladeTrap_checkObstructionsToTarget
 	ret nz
 
+	; ANTIGRAV: Don't allow vertical movement if bit 7 of subid is set. Helps for subid rooms.
+	; Technically not related to antigrav but whatever
+	ld e,Enemy.subid
+	ld a,(de)
+	and $80
+	jr z,++
+	ld e,Enemy.angle
+	ld a,(de)
+	and $08
+	ret z
+++
 	ld a,$01
 	call ecom_getTopDownAdjacentWallsBitset
 	ret nz
@@ -356,6 +370,7 @@ bladeTrap_subid05:
 bladeTrap_updateAngle:
 	ld e,Enemy.subid
 	ld a,(de)
+	and $7f
 	cp $03
 	ld e,Enemy.angle
 	jp nz,bladeTrap_decAngle
