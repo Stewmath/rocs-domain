@@ -137,7 +137,7 @@ crow_subid0_state9:
 
 ; Charging toward Link
 crow_subid0_stateA:
-	call crow_subid0_checkWithinScreenBounds
+	call crow_checkWithinScreenBounds
 	jp nc,enemyDelete
 
 	call ecom_decCounter2
@@ -322,7 +322,7 @@ crow_subid1_stateB:
 
 ; Moving, accelerating toward Link
 crow_subid1_stateC:
-	call crow_subid1_checkWithinScreenBounds
+	call crow_checkWithinScreenBounds
 	jr nc,@outOfBounds
 
 	call crow_updateAngleTowardLinkIfCounter1Zero
@@ -377,10 +377,13 @@ crow_setAnimationFromAngle:
 	jp enemySetAnimation
 
 ;;
-; Identical to crow_subid1_checkWithinScreenBounds.
-;
+; ANTIGRAV: Modified this to work in large rooms too
 ; @param[out]	cflag	c if within screen bounds
-crow_subid0_checkWithinScreenBounds:
+crow_checkWithinScreenBounds:
+	ld a,(wRoomIsLarge)
+	or a
+	jr nz,@large
+
 	ld e,Enemy.yh
 	ld a,(de)
 	cp (SMALL_ROOM_HEIGHT<<4) + 8
@@ -388,6 +391,16 @@ crow_subid0_checkWithinScreenBounds:
 	ld e,Enemy.xh
 	ld a,(de)
 	cp (SMALL_ROOM_WIDTH<<4) + 8
+	ret
+
+@large:
+	ld e,Enemy.yh
+	ld a,(de)
+	cp (LARGE_ROOM_HEIGHT<<4) + 8
+	ret nc
+	ld e,Enemy.xh
+	ld a,(de)
+	cp (LARGE_ROOM_WIDTH<<4) + 8
 	ret
 
 ;;
@@ -430,21 +443,6 @@ crow_updateSpeed:
 	ld e,Enemy.speed
 	ld a,(hl)
 	ld (de),a
-	ret
-
-
-;;
-; Identical to crow_subid0_checkWithinScreenBounds.
-;
-; @param[out]	cflag	c if within screen bounds
-crow_subid1_checkWithinScreenBounds:
-	ld e,Enemy.yh
-	ld a,(de)
-	cp (SCREEN_HEIGHT<<4) + 8
-	ret nc
-	ld e,Enemy.xh
-	ld a,(de)
-	cp (SCREEN_WIDTH<<4) + 8
 	ret
 
 
