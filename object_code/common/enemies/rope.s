@@ -39,20 +39,34 @@ enemyCode10:
 
 @normalState:
 	ld a,b
+	and $7f
 	rst_jumpTable
 	.dw rope_subid00
 	.dw rope_subid01
 	.dw rope_subid02
 	.dw rope_subid03
+	.dw rope_subid04
 
 
 @state_uninitialized:
+	; ANTIGRAV
+	ld e,Enemy.subid
+	ld a,(de)
+	and $80
+	jr z,++
+	ld e,Enemy.oamFlagsBackup
+	ld a,(de)
+	xor $40
+	ld (de),a
+++
 	ld e,Enemy.direction
 	ld a,$ff
 	ld (de),a
 
 	; Subid 1: make speed lower?
-	dec b
+	ld a,b
+	and $7f
+	dec a
 	ld a,SPEED_60
 	jp z,ecom_setSpeedAndState8
 
@@ -81,6 +95,7 @@ enemyCode10:
 @@substate3:
 	ld e,Enemy.subid
 	ld a,(de)
+	and $7f
 	ld hl,@defaultStates
 	rst_addAToHl
 	ld b,(hl)
@@ -94,6 +109,7 @@ enemyCode10:
 
 	ld e,Enemy.subid
 	ld a,(de)
+	and $7f
 	ld hl,@defaultStates
 	rst_addAToHl
 	ld e,Enemy.state
@@ -116,7 +132,7 @@ enemyCode10:
 
 
 @defaultStates: ; Default states for each subid
-	.db $09 $0b $0a $0a
+	.db $09 $0b $0a $0a $09
 
 
 @state_stub:
@@ -179,6 +195,7 @@ rope_state_chargeLink:
 	call ecom_applyVelocityForSideviewEnemyNoHoles
 	jp nz,rope_animate
 
+@doneCharging:
 	ld h,d
 	ld l,Enemy.state
 	dec (hl)
@@ -417,3 +434,141 @@ rope_checkHazardsIfApplicable:
 	bit 7,(hl)
 	ret z
 	jp ecom_checkHazards
+
+
+; Hackathon-2024: Rope which only moves horizontally (for sidescrolling rooms)
+rope_subid04:
+	ld a,(de)
+	sub $08
+	rst_jumpTable
+	.dw @state8
+	.dw @state9
+	.dw @stateA
+
+
+; Initialization
+@state8:
+	call @changeDirection
+
+	ld h,d
+	ld l,Enemy.state
+	inc (hl) ; [state] = 9
+
+	ld l,Enemy.collisionType
+	set 7,(hl)
+	ld l,Enemy.var30
+	set 7,(hl)
+
+
+; Moving around, checking whether to charge Link
+@state9:
+	call @checkOverHole
+	jr nz,++
+	ld e,Enemy.angle
+	ld a,(de)
+	xor $10
+	ld (de),a
+	call rope_updateAnimationFromAngle
+++
+	ld b,$0a
+	call objectCheckCenteredWithLink
+	jr nc,@noCharge
+
+	ld e,Enemy.counter2
+	ld a,(de)
+	or a
+	jr nz,@noCharge
+
+	; Charge at Link
+	ld e,Enemy.angle
+	ld a,(de)
+	push af
+	call ecom_updateCardinalAngleTowardTarget
+
+	; Must be a horizontal angle
+	ld e,Enemy.angle
+	ld a,(de)
+	and $08
+	pop bc
+	jr nz,++
+	ld a,b
+	ld (de),a
+	jr @noCharge
+++
+	call ecom_incState
+	ld l,Enemy.speed
+	ld (hl),SPEED_140
+	jp rope_updateAnimationFromAngle
+
+@noCharge:
+	call ecom_decCounter2
+	dec l
+	dec (hl) ; [counter1]--
+	call nz,ecom_applyVelocityForSideviewEnemyNoHoles
+	jr z,@changeDirection
+	jp enemyAnimate
+
+; Chooses random new angle, random value for counter1.
+@changeDirection
+	ldbc $01,$70
+	call ecom_randomBitwiseAndBCE
+	ld a,b
+	or a
+	ld b,$08
+	jr z,+
+	ld b,$18
++
+	ld e,Enemy.angle
+	ld a,b
+	ld (de),a
+	ld e,Enemy.counter1
+	ld a,c
+	add $70
+	ld (de),a
+	jp rope_updateAnimationFromAngle
+
+; Charging Link
+@stateA:
+	call @checkOverHole
+	jr z,++
+	call rope_state_chargeLink
+	ld e,Enemy.state
+	ld a,(de)
+	cp $0a
+	ret z
+	jr @changeDirection
+++
+	call rope_state_chargeLink@doneCharging
+	ld e,Enemy.state
+	ld a,$09
+	ld (de),a
+	jr @changeDirection
+
+
+; @param[out]	zflag	z if over a hole (sidescroll)
+@checkOverHole:
+	ld e,Enemy.subid
+	ld a,(de)
+	and $80
+	ld b,10
+	jr z,+
+	ld b,-10
++
+	ld e,Enemy.angle
+	ld a,(de)
+	cp $08
+	ld c,4
+	jr z,+
+	ld c,-4
++
+	ld e,Enemy.yh
+	ld a,(de)
+	add b
+	ld b,a
+	ld e,Enemy.xh
+	ld a,(de)
+	add c
+	ld c,a
+	call getTileCollisionsAtPosition
+	or a
+	ret
