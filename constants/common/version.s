@@ -72,6 +72,4 @@
 
 ; HACK-BASE: Disable intro locks (on menus, etc) when quickstart is enabled.
 ; Allows quickstart to work even on files that haven't cleared the intro.
-.if defined(QUICKSTART_ENABLE) && !defined(HACK_DISABLE_INTRO_LOCKS)
-	.define HACK_DISABLE_INTRO_LOCKS
-.endif
+.define HACK_DISABLE_INTRO_LOCKS

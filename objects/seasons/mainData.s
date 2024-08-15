@@ -2388,6 +2388,9 @@ group4Map19ObjectData:
 
 group4Map1aObjectData:
 	obj_Pointer group4Map1aEnemyObjectData
+	obj_Interaction $1e $06 $a7 $00
+	obj_Part $09 $00 $11
+	obj_Interaction $20 $01
 	obj_End
 
 group4Map1bObjectData:
@@ -2397,7 +2400,9 @@ group4Map1bObjectData:
 group4Map1cObjectData:
 	obj_Interaction $12 $00 $88 $78
 	obj_Interaction $e2 $01
-	obj_Interaction $20 $01
+	obj_Interaction $1e $04 $07 $00
+	obj_Pointer group4Map1cEnemyObjectData
+	obj_Part $09 $00 $92
 	obj_End
 
 group4Map1dObjectData:

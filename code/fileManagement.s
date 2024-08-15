@@ -358,8 +358,15 @@ initialFileVariables:
 	.db <wKidName+5,			$00
 	.db <wObtainedTreasureFlags,		1<<TREASURE_PUNCH
 	.db <wMaxBombs,				$10
-	.db <wLinkHealth,			$10 ; 4 hearts (gets overwritten in standard game)
+	.db <wLinkHealth,			$10
 	.db <wLinkMaxHealth,			$10
+
+	.db <wSwordLevel,			$01
+	.db <wFeatherLevel,			$02
+	.db <wInventoryB,			ITEM_SWORD
+	.db <wInventoryA,			ITEM_FEATHER
+	.db <wObtainedTreasureFlags,		(1<<TREASURE_PUNCH) | (1<<TREASURE_SWORD)
+	.db <wObtainedTreasureFlags+(TREASURE_FEATHER/8), (1<<(TREASURE_FEATHER&7))
 
 .ifdef ROM_AGES
 	; Initial spawn location
@@ -378,17 +385,15 @@ initialFileVariables:
 .else ;ROM_SEASONS
 	; Initial spawn location
 	.db <wDeathRespawnBuffer.group,		$00
-	.db <wDeathRespawnBuffer.room,		$a7
+	.db <wDeathRespawnBuffer.room,		$48
 	.db <wDeathRespawnBuffer.y,		$38
-	.db <wDeathRespawnBuffer.x,		$48
+	.db <wDeathRespawnBuffer.x,		$38
 	.db <wDeathRespawnBuffer.facingDir,	$02
 .endif
 	.db $00
 
 ; Standard game (not linked or hero)
 initialFileVariables_standardGame:
-	.db <wLinkHealth,			$0c ; 3 hearts
-	.db <wLinkMaxHealth,			$0c
 	; Continue reading the following data
 
 ; Hero game (not linked+hero game)
@@ -404,10 +409,7 @@ initialFileVariables_heroGame:
 
 ; Linked game, or linked+hero game
 initialFileVariables_linkedGame:
-	.db <wSwordLevel,			$01
 	.db <wShieldLevel,			$01
-	.db <wInventoryStorage,			ITEM_SWORD
-	.db <wObtainedTreasureFlags,		(1<<TREASURE_PUNCH) | (1<<TREASURE_SWORD)
 .ifdef ROM_AGES
 	.db <wPirateShipY,			$58
 	.db <wPirateShipX,			$78

@@ -15977,3 +15977,12 @@ groups:
       memory, so I
       cannot give
       shape to it.
+
+- group: 0x56
+  data:
+    - name: TX_INTRO
+      index: auto
+      text: >-
+        After awakening from an interminable dream, \Link finally washes ashore...\stop
+
+        But where?

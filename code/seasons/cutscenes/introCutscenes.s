@@ -1103,146 +1103,98 @@ cutscenePregameIntroHandler:
 	ld de,wCutsceneState
 	ld a,(de)
 	rst_jumpTable
-	.dw cutscene0dFunc0
-	.dw cutscene0dFunc1
-	.dw cutscene0dFunc2
-	.dw cutscene0dFunc3
-	.dw cutscene0dFunc4
-	.dw cutscene0dFunc5
-	.dw cutscene0dFunc6
-	.dw cutscene0dFunc7
-	.dw cutscene0dFunc8
-	.dw cutscene0dFunc9
+	.dw @stateInit
+	.dw @stateWait1
+	.dw @stateShowText
+	.dw @stateWaitText
+	.dw @stateEnd
 
-	.dw cutscene0dFunca
-	.dw cutscene0dFuncb
-	.dw cutscene0dFuncc
-
-cutscene0dFunc0:
+@stateInit:
 	ld a,(wPaletteThread_mode)
 	or a
 	ret nz
-	call checkIsLinkedGame
-	jr nz,+
-	ld a,$0a
-	ld (de),a
-	jp cutscene0dFunca
-+
-	ld a,$01
-	ld (de),a
-	; Room of Rites
-	ld bc,ROOM_ZELDA_IN_FINAL_DUNGEON
-	call disableLcdAndLoadRoom_body
-	ld a,PALH_ac
+
+	call disableLcd
+	ld a,($ff00+R_SVBK)
+	push af
+	ld a,$02
+	ld ($ff00+R_SVBK),a
+	ld hl,$de80
+	ld b,$40
+	call clearMemory
+
+	; Fix sides of textbox being wrong color. Not sure why I needed to add this when it's not a
+	; problem with the normal intro cutscene.
+	ld a,$03
+	ld ($ff00+R_SVBK),a
+	ld hl,w3VramAttributes
+	ld a,$02
+	ld bc,$200
+	call fillMemoryBc
+
+	pop af
+	ld ($ff00+R_SVBK),a
+	call clearScreenVariablesAndWramBank1
+	call clearOam
+
+	ld a,PALH_0f
 	call loadPaletteHeader
-	ld b,$03
--
-	call getFreeInteractionSlot
-	jr nz,+
-	ld (hl),INTERAC_TWINROVA_FLAME
-	inc l
-	ld (hl),b
-	dec b
-	jr nz,-
-+
-	ld a,MUS_FINAL_DUNGEON
-	call playSound
-	ld hl,$cbb3
-	ld (hl),$3c
-	ld a,$13
-	call loadGfxRegisterStateIndex
-	ld a,($c48d)
-	ldh (<hCameraX),a
-	xor a
-	ldh (<hCameraY),a
+
+	ld a,$02
+	call seasonsFunc_03_7a6b
+	call seasonsFunc_03_7a88
+
+	;ld a,$08
+	;call setLinkID
+	;ld l,<w1Link.enabled
+	;ld (hl),$01
+	;ld l,<w1Link.subid
+	;ld (hl),$0b
+
 	ld a,$00
 	ld (wScrollMode),a
-	jp clearFadingPalettes2
-cutscene0dFunc1:
-	ld e,$96
--
-	call decCbb3
-	ret nz
-	call incCutsceneState2
-	ld hl,$cbb3
-	ld (hl),e
-	ld a,SND_CREEPY_LAUGH
-	jp playSound
-cutscene0dFunc2:
-	ld e,$3c
-	jr -
-cutscene0dFunc3:
-	call decCbb3
-	ret nz
-	call incCutsceneState2
-	call fastFadeinFromBlack
-	ld a,$10
-	ld ($c4b2),a
-	ld ($c4b4),a
-	ld a,$03
-	ld ($c4b1),a
-	ld ($c4b3),a
-	ld a,SND_LIGHTTORCH
-	jp playSound
-cutscene0dFunc4:
-	ld a,(wPaletteThread_mode)
-	or a
-	ret nz
-	call incCutsceneState2
-	ld a,$0e
-	ld ($cbb3),a
-	call fadeinFromBlack
-	ld a,$ef
-	ld ($c4b2),a
-	ld ($c4b4),a
-	ld a,$fc
-	ld ($c4b1),a
-	ld ($c4b3),a
-	ret
-cutscene0dFunc5:
-	call decCbb3
-	ret nz
+	call clearPaletteFadeVariablesAndRefreshPalettes
 	xor a
-	ld (wPaletteThread_mode),a
-	ld a,$78
-	ld ($cbb3),a
-	jp incCutsceneState2
-cutscene0dFunc6:
+	ldh (<hCameraY),a
+	ldh (<hCameraX),a
+	ld a,60
+	ld (wTmpcbb3),a
+	ld a,$15
+	call loadGfxRegisterStateIndex
+	jp incCutsceneState
+
+@stateWait1:
 	call decCbb3
 	ret nz
-	call incCutsceneState2
-	ld a,$08
-	ld ($cbae),a
-	ld a,$03
-	ld ($cbac),a
-	ld bc,$0c15
-	jp showText
-cutscene0dFunc7:
-	call retIfTextIsActive
-	call incCutsceneState2
-	ld ($cbb3),a
-	dec a
-	ld ($cbba),a
-	call restartSound
-	ld a,SND_BIG_EXPLOSION_2
-	jp playSound
-cutscene0dFunc8:
-	ld hl,$cbb3
-	ld b,$03
-	call flashScreen
-	ret z
-	call incCutsceneState2
-	ld a,$3c
-	ld ($cbb3),a
-	ld a,$02
-	jp fadeoutToWhiteWithDelay
-cutscene0dFunc9:
-	ld a,(wPaletteThread_mode)
+	jp incCutsceneState
+
+@stateShowText:
+	ld a,TEXTBOXFLAG_ALTPALETTE2
+	ld (wTextboxFlags),a
+	ld bc,TX_INTRO
+	call showText
+	ld a,60
+	ld (wTmpcbb3),a
+	jp incCutsceneState
+
+@stateWaitText:
+	ld a,(wTextIsActive)
 	or a
 	ret nz
 	call decCbb3
 	ret nz
-	jp incCutsceneState2
+	jp incCutsceneState
+
+@stateEnd:
+	ld hl,wGameState
+	xor a
+	ldi (hl),a
+	ld (hl),a
+	ld a,SNDCTRL_STOPMUSIC
+	call playSound
+	ld a,GLOBALFLAG_3d
+	jp setGlobalFlag
+
 
 cutsceneOnoxTaunting:
 	call cutsceneOnoxTauntingHandler

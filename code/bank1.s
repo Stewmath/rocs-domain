@@ -3481,12 +3481,10 @@ initializeGame:
 	ld a,GLOBALFLAG_PREGAME_INTRO_DONE
 	call checkGlobalFlag
 	jr nz,func_5a60
-
-	ld a,GLOBALFLAG_3d
-	call checkGlobalFlag
-	jr nz,@summonLinkCutscene
 .endif
 
+	ld a,GLOBALFLAG_PREGAME_INTRO_DONE
+	call setGlobalFlag
 	ld a,$02
 	ld (wGameState),a
 	ld a,CUTSCENE_PREGAME_INTRO
