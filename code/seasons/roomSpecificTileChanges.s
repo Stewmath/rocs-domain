@@ -52,6 +52,9 @@ applyRoomSpecificTileChanges:
 	.dw tileReplacement_group5Map3b ; $2d
 	.dw tileReplacement_group4Map61 ; $2e
 
+	; HACKATHON 2024
+	.dw tileReplacement_group4Map1a ; $2f
+
 roomTileChangerCodeGroupTable:
 	.dw roomTileChangerCodeGroup0Data
 	.dw roomTileChangerCodeGroup1Data
@@ -63,28 +66,6 @@ roomTileChangerCodeGroupTable:
 	.dw roomTileChangerCodeGroup7Data
 
 roomTileChangerCodeGroup0Data:
-	.db $c5 $00
-	.db $d9 $01
-	.db $54 $10
-	.db $7f $11
-	.db $62 $12
-	.db $60 $13
-	.db $61 $14
-	.db $70 $15
-	.db $71 $16
-	.db $81 $17
-	.db $0d $18
-	.db $1d $19
-	.db $63 $1e
-	.db $e4 $26
-	.db $f4 $1f
-	.db $6f $20
-	.db $42 $21
-	.db $fc $22
-	.db $ee $25
-	.db $56 $28
-	.db $4b $1d
-	.db $f6 $08
 	.db $00
 
 roomTileChangerCodeGroup1Data:
@@ -102,12 +83,7 @@ roomTileChangerCodeGroup3Data:
 	.db $00
 
 roomTileChangerCodeGroup4Data:
-	.db $61 $2e
-	.db $78 $02
-	.db $2e $04
-	.db $64 $05
-	.db $89 $06
-	.db $bb $07
+	.db $1a $2f
 	.db $00
 
 roomTileChangerCodeGroup5Data:
@@ -976,4 +952,25 @@ replaceRupeeRoomRupees:
 	pop bc
 	dec c
 	jr nz,replaceRupeeRoomRupees
+	ret
+
+
+; HACKATHON 2024
+
+
+tileReplacement_group4Map1a;
+	call getThisRoomFlags
+	bit 6,(hl)
+	ret z
+
+	ld hl,wRoomLayout+$77
+	ld b,TILEINDEX_VERTICAL_BRIDGE
+	ld c,$10
+@loop:
+	ld (hl),b
+	ld a,l
+	sub c
+	ld l,a
+	cp $07
+	jr nz,@loop
 	ret

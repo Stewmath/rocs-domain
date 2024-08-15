@@ -3258,3 +3258,16 @@ dekuScrub_upgradeSatchel:
 	ret
 table_65cf:
 	.db $20 $50 $99
+
+
+
+; ================================================================================
+; 2024 HACKATHON
+; ================================================================================
+
+rocsScript_setBridgeTile:
+	ld e,Interaction.var30
+	ld a,(de)
+	ld c,a
+	ld a,TILEINDEX_VERTICAL_BRIDGE
+	jp setTile

@@ -539,3 +539,20 @@ rocsScript_smallKey:
 	stopifitemflagset
 	spawnitem TREASURE_SMALL_KEY, $04
 	scriptend
+
+rocsScript_longBridge:
+	jumpifroomflagset $40, @end
+	checkmemoryeq wActiveTriggers, $01
+	writeobjectbyte Interaction.var30, $77
+	orroomflag $40
+
+@loop:
+	wait 8
+	playsound SND_DOORCLOSE
+	asm15 scriptHelp.rocsScript_setBridgeTile
+	addobjectbyte Interaction.var30, -$10
+	jumpifobjectbyteeq Interaction.var30, $07, @end
+	scriptjump @loop
+
+@end:
+	scriptend
