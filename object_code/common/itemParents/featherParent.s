@@ -115,6 +115,14 @@ parentItemCode_feather:
 	ret
 
 @doneCheckingButton:
+	; Check if moving laterally
+	ld a,(w1Link.angle)
+	inc a
+	jr z,+
+	ld e,Item.var39
+	ld a,1
+	ld (de),a
++
 	call @checkForInflection
 	ret nz
 
@@ -202,6 +210,12 @@ parentItemCode_feather:
 	jr nz,@sidescroll
 
 	; Top-down
+	; Can't trigger antigrav after moving laterally, to prevent softlocks
+	ld e,Item.var39
+	ld a,(de)
+	or a
+	jp nz,@deleteParent
+
 	ld a,LINK_STATE_BOUNCING_ON_TRAMPOLINE
 	ld (wLinkForceState),a
 
