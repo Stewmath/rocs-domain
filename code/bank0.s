@@ -7584,6 +7584,10 @@ objectGetRelatedObject2Var:
 ;
 ; @param[out]	a	Z position
 objectGetZAboveScreen:
+	ld a,(wAntigravState)
+	or a
+	jr nz,@antigrav
+
 	ldh a,(<hActiveObjectType)
 	add Object.yh
 	ld e,a
@@ -7597,6 +7601,26 @@ objectGetZAboveScreen:
 
 	ld a,$80
 	ret
+
+@antigrav:
+	ldh a,(<hActiveObjectType)
+	add Object.yh
+	ld e,a
+	ldh a,(<hCameraY)
+	ld b,a
+	ld a,(de)
+	sub b
+	ld b,a
+	ld a,(SCREEN_HEIGHT*16)+8
+	sub b
+	cpl
+	inc a
+	cp $80
+	ret nc
+
+	ld a,$80
+	ret
+
 
 ;;
 ; Checks if the object is within the screen. Note the screen size may be smaller than the
@@ -10255,7 +10279,7 @@ specialObjectSetCoordinatesToRespawnYX:
 
 ;;
 ; Call this when wAntigravState changes.
-updateAntigravState:
+antigravStateChanged:
 	; Flip/unflip link sprite
 	push hl
 	ld a,(wAntigravState)
@@ -11165,7 +11189,27 @@ initializeRoom:
 
 	callfrombank0 staticObjects.parseStaticObjects
 
-	; ANTIGRAV: Update when moving between rooms (1 for top-down, 2 for sidescroll)
+	call updateAntigravState
+
+	pop af
+	setrombank
+	ret
+
+
+updateAntigravState:
+	; ANTIGRAV: Update antigrav state when moving between rooms (1 for top-down, 2 for
+	; sidescroll)
+	ld a,(wTilesetFlags)
+	and TILESETFLAG_SIDESCROLL
+	jr nz,++
+	ld a,(wDungeonFloor)
+	or a
+	ld a,2
+	jr nz,+
+	xor a
++
+	ld (wAntigravState),a
+++
 	ld a,(wAntigravState)
 	or a
 	jr z,++
@@ -11177,9 +11221,6 @@ initializeRoom:
 +
 	ld (wAntigravState),a
 ++
-
-	pop af
-	setrombank
 	ret
 
 

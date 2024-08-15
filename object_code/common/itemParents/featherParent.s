@@ -227,5 +227,5 @@ parentItemCode_feather:
 	inc l
 	ld (hl),b
 
-	call updateAntigravState
+	call antigravStateChanged
 	jp @deleteParent

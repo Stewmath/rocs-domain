@@ -350,12 +350,22 @@ warpTransition5_00:
 	call objectGetZAboveScreen
 	ld l,<w1Link.zh
 	ld (hl),a
+
+	call updateAntigravState
+	ld b,-$04
+	ld c,DIR_DOWN
+	ld a,(wAntigravState)
+	cp 2
+	jr nz,+
+	ld b,$04
+	ld c,DIR_UP
++
 	ld l,<w1Link.yh
 	ld a,(hl)
-	sub $04
+	add b
 	ld (hl),a
 	ld l,<w1Link.direction
-	ld (hl),DIR_DOWN
+	ld (hl),c
 	ld a,LINK_ANIM_MODE_FALL
 	jp specialObjectSetAnimation
 
@@ -1770,15 +1780,6 @@ linkState09:
 	ld a,(wDungeonFloor)
 	xor 1
 	ld (wDungeonFloor),a
-
-	; Invert antigrav state
-	ld a,(wAntigravState)
-	or a
-	ld a,2
-	jr z,+
-	xor a
-+
-	ld (wAntigravState),a
 
 	call getActiveRoomFromDungeonMapPosition
 	ld (wWarpDestRoom),a
