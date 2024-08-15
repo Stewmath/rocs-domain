@@ -5034,9 +5034,15 @@ func_60e9:
 	ret nz
 
 	; Get tile (-> FF8C) and position of tile (-> FF8D) that Link is standing on
+	ld a,(wAntigravState)
+	or a
+	ld b,$04
+	jr z,+
+	ld b,-$04
++
 	ld hl,w1Link.yh
 	ldi a,(hl)
-	add $04
+	add b
 	ld b,a
 	inc l
 	ld c,(hl)
@@ -5120,7 +5126,12 @@ checkLinkCloseEnoughToWarpTileCenter:
 	ld l,<w1Link.yh
 	jr nz,@tileSolid
 
+	ld a,(wAntigravState)
+	cp 2
 	ld b,$04
+	jr nz,+
+	ld b,-$04
++
 	call @func_618f
 	ret nc
 
