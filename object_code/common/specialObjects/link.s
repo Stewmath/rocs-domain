@@ -5677,13 +5677,20 @@ checkLinkJumpingOffCliff:
 	ret nz
 
 	; Check that Link is facing towards a solid wall
+	push af
+	ld a,(wAntigravState)
+	cp 2
+	ld hl,@wallDirections
+	jr nz,+
+	ld hl,@invertedWallDirections
++
+	pop af
 	add a
 	swap a
 	ld c,a
 	add a
 	add a
 	add c
-	ld hl,@wallDirections
 	rst_addAToHl
 	ld e,SpecialObject.adjacentWallsBitset
 	ld a,(de)
@@ -5763,6 +5770,13 @@ checkLinkJumpingOffCliff:
 	.db $03 $00 $04 $05 $04 ; DIR_RIGHT
 	.db $30 $08 $fd $08 $02 ; DIR_DOWN
 	.db $0c $00 $fb $05 $fb ; DIR_LEFT
+
+@invertedWallDirections:
+	.db $c0, -8, -3, -8, 2 ; DIR_UP
+	.db $03, -5, 4, 0, 4 ; DIR_RIGHT
+	.db $30, 4, -3, 4, 2 ; DIR_DOWN
+	.db $0c, -5, -5, 0, -5 ; DIR_LEFT
+
 
 ;;
 ; LINK_STATE_JUMPING_DOWN_LEDGE
@@ -5947,9 +5961,16 @@ linkState12:
 	; Get Link's position in bc
 	ld h,d
 	ld l,SpecialObject.yh
-	ldi a,(hl)
-	add $05
+
+	ld a,(wAntigravState)
+	cp 2
+	ld a,$05
+	jr nz,+
+	ld a,-$05
++
+	add (hl)
 	ld b,a
+	inc l
 	inc l
 	ld c,(hl)
 
