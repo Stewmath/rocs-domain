@@ -8048,9 +8048,7 @@ groups:
   - name: TX_2e00
     index: 0x00
     text: |-
-      Maku Tree Gate\stop
-      Show courage to
-      gain passage!
+      Ye who seeks treasure must use thy feet, but not look down.
 
   - name: TX_2e01
     index: 0x01

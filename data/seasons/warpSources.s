@@ -115,7 +115,6 @@ group0WarpSources:
 	m_PointerWarp     $28 warpSource75f3
 	m_StandardWarp $0 $39 $7b $5 $4
 	m_StandardWarp $0 $09 $7f $5 $4
-	m_PointerWarp     $19 warpSource768b
 	m_StandardWarp $0 $29 $80 $5 $4
 	m_StandardWarp $0 $31 $48 $4 $4
 	m_StandardWarp $0 $f1 $4f $4 $4
@@ -137,15 +136,14 @@ group0WarpSources:
 	m_StandardWarp $0 $02 $8f $5 $4
 	m_StandardWarp $0 $8f $90 $5 $4
 	m_StandardWarp $0 $a4 $91 $5 $4
-	m_PointerWarp     $57 warpSource75eb
 	m_StandardWarp $0 $69 $93 $5 $4
 	m_StandardWarp $0 $79 $94 $5 $4
 	m_StandardWarp $0 $59 $95 $5 $4
-	m_StandardWarp $0 $49 $97 $5 $4
 	m_StandardWarp $0 $a6 $9a $5 $4
 	m_StandardWarp $0 $e0 $46 $3 $4
 	m_StandardWarp $0 $7e $9b $5 $4
 	m_StandardWarp $0 $b6 $7b $0 $4
+	m_StandardWarp $0 $38 $5d $4 $4
 	m_WarpListEndNoDefault
 
 warpSource75e3:
@@ -153,10 +151,6 @@ warpSource75e3:
 	m_PositionWarp $14 $98 $5 $4
 	m_WarpListEndWithDefault
 
-warpSource75eb:
-	m_PositionWarp $32 $92 $5 $4
-	m_PositionWarp $15 $99 $5 $4
-	m_WarpListEndWithDefault
 
 warpSource75f3:
 	m_PositionWarp $13 $78 $5 $4
@@ -250,12 +244,6 @@ warpSource7683:
 	m_PositionWarp $55 $66 $5 $4
 	m_WarpListEndWithDefault
 
-warpSource768b:
-	m_PositionWarp $06 $7d $5 $4
-	m_PositionWarp $08 $7e $5 $4
-	m_PositionWarp $22 $73 $5 $4
-	m_PositionWarp $57 $81 $5 $4
-	m_WarpListEndWithDefault
 
 
 group1WarpSources:
@@ -453,16 +441,13 @@ warpSource78ff:
 
 
 group4WarpSources:
-	m_StandardWarp $4 $04 $00 $0 $3
 	m_StandardWarp $4 $1c $01 $0 $3
 	m_StandardWarp $4 $39 $02 $0 $3
 	m_StandardWarp $4 $4b $03 $0 $3
 	m_StandardWarp $4 $81 $04 $0 $3
 	m_StandardWarp $4 $a7 $05 $0 $3
 	m_StandardWarp $4 $ba $06 $0 $3
-	m_StandardWarp $0 $07 $00 $6 $2
 	m_StandardWarp $0 $0a $01 $6 $2
-	m_StandardWarp $0 $1f $02 $6 $2
 	m_StandardWarp $0 $32 $03 $6 $2
 	m_StandardWarp $0 $33 $26 $0 $2
 	m_StandardWarp $0 $37 $27 $0 $2
@@ -539,6 +524,10 @@ group4WarpSources:
 	m_StandardWarp $4 $fb $65 $0 $3
 	m_StandardWarp $4 $fc $66 $0 $3
 	m_StandardWarp $0 $b6 $7b $0 $4
+	m_StandardWarp $0 $22 $10 $6 $2
+	m_StandardWarp $0 $21 $11 $6 $2
+	m_StandardWarp $0 $16 $00 $6 $2
+	m_StandardWarp $0 $0c $02 $6 $2
 	m_WarpListEndNoDefault
 
 warpSource7a5f:
@@ -821,8 +810,7 @@ warpSource7d83:
 group6WarpSources:
 	m_StandardWarp $1 $01 $08 $4 $3
 	m_StandardWarp $1 $09 $09 $4 $3
-	m_StandardWarp $1 $1d $0a $4 $3
-	m_StandardWarp $2 $1e $0b $4 $3
+	m_StandardWarp $08 $1d $0a $4 $3
 	m_StandardWarp $1 $3a $12 $4 $3
 	m_StandardWarp $2 $3b $0e $4 $3
 	m_StandardWarp $1 $3c $14 $4 $3
@@ -836,6 +824,8 @@ group6WarpSources:
 	m_StandardWarp $1 $a8 $25 $4 $3
 	m_StandardWarp $2 $a9 $28 $4 $3
 	m_StandardWarp $0 $b6 $7b $0 $4
+	m_StandardWarp $02 $3f $0b $4 $3
+	m_StandardWarp $02 $0d $47 $4 $3
 	m_WarpListEndNoDefault
 
 group7WarpSources:

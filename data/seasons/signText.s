@@ -51,7 +51,7 @@ signTextGroup1Data:
 
 signTextGroup2Data:
 signTextGroup4Data:
-	.db $17, $04, <TX_2e02
+	.db $41, $16, <TX_2e00
 	.db $00
 
 signTextGroup5Data:
