@@ -1013,7 +1013,6 @@ group4Map0eEnemyObjectData:
 
 group4Map0fEnemyObjectData:
 	obj_Part $05 $01 $33
-group4Map10EnemyObjectData:
 	obj_RandomEnemy $a4 $32 $00
 	obj_EndPointer
 
@@ -2458,4 +2457,8 @@ group4Map0dEnemyObjectData:
 	obj_EndPointer
 
 group4Map1cEnemyObjectData:
+	obj_EndPointer
+
+group4Map10EnemyObjectData:
+	obj_RandomEnemy $a4 $32 $00
 	obj_EndPointer

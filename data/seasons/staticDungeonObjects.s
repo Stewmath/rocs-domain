@@ -19,7 +19,6 @@ dungeon0StaticObjects:
 	.db $ff
 
 dungeon1StaticObjects:
-	.db $03, $15, INTERAC_MINECART, $00, $28, $78
 	.db $ff
 
 dungeon2StaticObjects:

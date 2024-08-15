@@ -521,10 +521,7 @@ groups:
   - name: TX_0037
     index: 0x37
     text: |-
-      You got your
-      \col(1)feather\col(0) back!\stop
-      Now return the
-      ore.
+      You got the \col(1)Roc's Feet\col(0)! Press the button twice and see what happens!
 
   - name: TX_0038
     index: 0x38
@@ -1225,8 +1222,7 @@ groups:
     index: 0x01
     text: |2-
        Level 1
-       Gnarled Root
-        Dungeon
+       Roc's Temple
 
   - name: TX_0202
     index: 0x02
@@ -8053,8 +8049,7 @@ groups:
   - name: TX_2e01
     index: 0x01
     text: |-
-      Vases wanted!
-       Ingo, Collector
+      Unleash your new power, and discover a new perspective.
 
   - name:
     - TX_2e02

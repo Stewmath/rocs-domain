@@ -556,3 +556,9 @@ rocsScript_longBridge:
 
 @end:
 	scriptend
+
+
+rocsScript_rocsFeet:
+	stopifitemflagset
+	spawnitem TREASURE_FEATHER, $03
+	scriptend

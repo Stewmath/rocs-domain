@@ -64,6 +64,7 @@ interactionCode20:
 @dungeon1:
 	.dw mainScripts.rocsScript_smallKey
 	.dw mainScripts.rocsScript_longBridge
+	.dw mainScripts.rocsScript_rocsFeet
 
 @dungeon2:
 	.dw mainScripts.snakesRemainsScript_timerForChestDisappearing
