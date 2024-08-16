@@ -3418,7 +3418,7 @@ paletteData5460:
 	m_RGB16 $00 $00 $00
 
 paletteData5490:
-	m_RGB16 $15 $13 $04
+	m_RGB16 $06 $10 $1c
 	m_RGB16 $18 $0e $0b
 	m_RGB16 $13 $03 $03
 	m_RGB16 $00 $00 $00

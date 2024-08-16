@@ -2425,6 +2425,10 @@ group4Map20ObjectData:
 
 group4Map21ObjectData:
 	obj_BeforeEvent group4Map21BeforeEventObjectData
+	obj_Part $09 $00 $96
+	obj_Interaction $20 $03
+	obj_Part $09 $01 $11
+	obj_Interaction $20 $04
 	obj_End
 
 group4Map22ObjectData:
