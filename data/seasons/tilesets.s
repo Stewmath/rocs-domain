@@ -242,11 +242,11 @@ tilesetData:
 	.db $22, $05, $18
 
 	; 0x38
-	.db $42, $08
+	.db $41, $08
 	.db UNIQUE_GFXH_NONE
 	.db GFXH_TILESET_SNAKES_REMAINS
-	.db PALH_TILESET_SNAKES_REMAINS
-	.db $23, $05, $19
+	.db PALH_TILESET_GNARLED_ROOT_DUNGEON
+	.db $23, $05, $18
 
 	; 0x39
 	.db $43, $08
