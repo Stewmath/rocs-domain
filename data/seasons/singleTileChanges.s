@@ -47,10 +47,11 @@ singleTileChangeGroup1Data:
 
 singleTileChangeGroup2Data:
 singleTileChangeGroup3Data:
+	.db $00 $00
+
 singleTileChangeGroup4Data:
-	.db $39 $80 $07 $a0
-	.db $39 $80 $24 $09
-	.db $39 $80 $2a $09
+	.db $22 $40 $4b $a2
+	.db $21 $40 $4b $a2
 	.db $00 $00
 
 singleTileChangeGroup5Data:

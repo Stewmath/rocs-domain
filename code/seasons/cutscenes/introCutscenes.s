@@ -5,7 +5,8 @@ multiIntroCutsceneHandler:
 	rst_jumpTable
 	.dw cutsceneDinDancing
 	.dw cutsceneDinImprisoned
-	.dw cutsceneTempleSinking
+	.dw cutsceneInvertedBlockDrop
+	;.dw cutsceneTempleSinking
 	.dw cutscenePregameIntro
 	.dw cutsceneOnoxTaunting
 
@@ -641,6 +642,7 @@ cutsceneTempleSinking:
 	.dw cutscene08Func6
 	.dw cutscene08Func7
 	.dw cutscene08Func8
+
 cutscene08Func0:
 	ld a,(wPaletteThread_mode)
 	or a
@@ -1424,3 +1426,329 @@ seasonsFunc_03_7db8:
 	pop af
 	ld ($ff00+R_SVBK),a
 	ret
+
+
+
+cutsceneInvertedBlockDrop:
+	ld de,wCutsceneState
+	ld a,(de)
+	rst_jumpTable
+	.dw @fadeout1
+	.dw @wait1
+	.dw @loadRoom
+	.dw @fadein1
+	.dw @fall1
+	.dw @fadeout2
+	.dw @fadein2
+	.dw @fall2
+	.dw @wait2
+	.dw @fadeout3
+	.dw @backToGame
+
+@fadeout1:
+	call fadeoutToWhite
+	jp incCutsceneState
+
+@wait1:
+	ld a,(wPaletteThread_mode)
+	or a
+	ret nz
+	jp incCutsceneState
+
+@loadRoom:
+	call disableLcd
+
+	ld hl,@table1
+	call @loadTable
+
+	call fadeinFromWhite
+	jp incCutsceneState
+
+@loadTable:
+	ld a,(wActiveRoom)
+	ld e,a
+	call lookupKey
+	jp nc,panic
+	dec a
+	rst_addAToHl
+
+	ldi a,(hl)
+	ld b,a
+	ldi a,(hl)
+	ld c,a
+	ldi a,(hl)
+	add $10
+	ldh (<hCameraY),a
+	ldi a,(hl)
+	ldh (<hCameraX),a
+	ldi a,(hl)
+	ld (wAntigravState),a
+
+	xor a
+	ld (wScreenOffsetX),a
+	ld (wScreenOffsetY),a
+
+	xor a
+	ld (wTmpcbb4),a ; Y
+	ldi a,(hl)
+	ld (wTmpcbb5),a
+	ldi a,(hl)
+	ld (wTmpcbb6),a ; X
+	xor a
+	ld (wTmpcbb7),a ; Y speed
+	ld (wTmpcbb8),a
+
+	ldi a,(hl)
+	ld (wTmpcbba),a ; Gravity
+
+	ldi a,(hl)
+	ld (wTmpcbb3),a ; Counter
+	ldi a,(hl)
+	ld (wTmpcbb9),a ; Room to revert to
+	ldi a,(hl)
+	ld (wTmpcbbb),a ; Tile position to change
+
+	xor a
+	call forceLoadRoom
+
+	call @copyPalette
+
+	; Load room layout to VRAM
+	ld a,UNCMP_GFXH_2d
+	call loadUncompressedGfxHeader
+
+	; Turn screen back on
+	ld a,$02
+	call loadGfxRegisterStateIndex
+
+	callab bank1.updateGfxRegs2Scroll
+	ret
+
+@fadein1:
+	ld a,(wPaletteThread_mode)
+	or a
+	ret nz
+
+	ld a,SND_THROW
+	call playSound
+
+	ld a,(wTmpcbbb)
+	ld c,a
+	ld a,$a2
+	call setTile
+	callab tilesets.updateChangedTileQueue
+	call @drawSprite
+	jp incCutsceneState
+
+@fall1:
+	call @updateGravity
+	call @drawSprite
+
+	call decCbb3
+	ret nz
+
+	call fadeoutToWhite
+	jp incCutsceneState
+
+@updateGravity:
+	ld a,(wTmpcbba)
+	bit 7,a
+	jr nz,@@inverted
+	ld c,a
+	ld hl,wTmpcbb7
+	ld a,(hl)
+	add c
+	ld (hl),a
+	inc hl
+	ld a,(hl)
+	adc 0
+	ld (hl),a
+	jr @@applySpeed
+
+@@inverted:
+	cpl
+	inc a
+	ld c,a
+	ld hl,wTmpcbb7
+	ld a,(hl)
+	sub c
+	ld (hl),a
+	inc hl
+	ld a,(hl)
+	sbc 0
+	ld (hl),a
+
+@@applySpeed:
+	ld de,wTmpcbb4
+	ld hl,wTmpcbb7
+	call add16BitRefs
+	ret
+
+@drawSprite:
+	ld hl,wTmpcbb5
+	ldi a,(hl)
+	ld b,a
+	ld c,(hl)
+	ld a,(wAntigravState)
+	cp 2
+	ld hl,@oamData
+	jr nz,+
+	ld hl,@oamDataInverted
++
+	jp addSpritesToOam_withOffset
+
+@fadeout2:
+	ld a,(wPaletteThread_mode)
+	or a
+	ret nz
+
+	call disableLcd
+	ld hl,@table2
+	call @loadTable
+	call fadeinFromWhite
+	jp incCutsceneState
+
+@fadein2:
+	ld a,(wPaletteThread_mode)
+	or a
+	ret nz
+	jp incCutsceneState
+
+@fall2:
+	call @updateGravity
+	call @drawSprite
+
+	call decCbb3
+	ret nz
+
+	; Change tile
+	ld a,(wTmpcbbb)
+	ld c,a
+	ld a,$a2
+	call setTile
+	callab tilesets.updateChangedTileQueue
+
+	; Draw debris
+	call getFreeInteractionSlot
+	jp nz,panic
+	ld (hl),INTERAC_ROCKDEBRIS
+	ld l,Interaction.yh
+	ldh a,(<hCameraY)
+	ld b,a
+	ldh a,(<hCameraX)
+	ld c,a
+	ld a,(wTmpcbb5)
+	add b
+	add 8
+	ldi (hl),a
+	inc l
+	ld a,(wTmpcbb6)
+	add c
+	add 8
+	ld (hl),a
+
+	ld a,60
+	ld (wTmpcbb3),a
+
+	jp incCutsceneState
+
+@wait2:
+	call decCbb3
+	ret nz
+	ld a,SND_SOLVEPUZZLE
+	call playSound
+	call fadeoutToWhite
+	jp incCutsceneState
+
+@fadeout3:
+	ld a,(wPaletteThread_mode)
+	or a
+	ret nz
+	jp incCutsceneState
+
+@backToGame:
+	call getThisRoomFlags
+	or $40
+	ld (hl),a
+	dec l ; Room above
+	ld a,(hl)
+	or $40
+	ld (hl),a
+
+	xor a
+	ld (wCutsceneIndex),a
+	ld (wGameState),a
+	ret
+
+@copyPalette:
+	ld b,2
+
+	; bc = w2TilesetBgPalettes + (palette index) * 8
+	ld a,b
+	and $07
+	swap a
+	rrca
+	ld bc,w2TilesetBgPalettes
+	call addAToBc
+
+	ld a,($ff00+R_SVBK)
+	push af
+	ld a,:w2TilesetBgPalettes
+	ld ($ff00+R_SVBK),a
+
+	; Copy the background palette to sprite palette 6
+	ld hl,w2TilesetSprPalettes+6*8
+	ld e,$08
+--
+	ld a,(bc)
+	ldi (hl),a
+	inc c
+	dec e
+	jr nz,--
+
+	; Slate sprite palette 6 for reloading
+	ld hl,hDirtySprPalettes
+	set 6,(hl)
+
+	pop af
+	ld ($ff00+R_SVBK),a
+	ret
+
+
+@table1:
+	.db $21, @room21Data1 - CADDR
+	.db $00
+
+@room21Data1:
+	.db $04 $21 ; Dest room
+	.db $00 $50 ; Camera
+	.db $00 ; Antigrav state
+	.db $40 $60 ; Start position
+	.db -$20 ; Gravity
+	.db 40 ; # of frames
+	.db $21 ; Room to revert to
+	.db $5b ; Tile position
+
+@table2:
+	.db $21, @room21Data2 - CADDR
+	.db $00
+
+@room21Data2:
+	.db $04 $22 ; Dest room
+	.db $00 $50 ; Camera
+	.db $02 ; Antigrav state
+	.db $80 $60 ; Start position
+	.db -$20 ; Gravity
+	.db 32 ; # of frames
+	.db $21 ; Room to revert to
+	.db $5b ; Tile position (off by 1 vertical tile? *shrug*)
+
+@oamData:
+	.db 2
+	.db $20 $08 $a0 $0e
+	.db $20 $10 $a2 $0e
+
+@oamDataInverted:
+	.db 2
+	.db $20 $08 $a0 $4e
+	.db $20 $10 $a2 $4e

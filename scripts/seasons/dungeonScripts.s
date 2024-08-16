@@ -562,3 +562,11 @@ rocsScript_rocsFeet:
 	stopifitemflagset
 	spawnitem TREASURE_FEATHER, $03
 	scriptend
+
+
+rocsScript_blockFall1:
+	jumpifroomflagset $40, @end
+	checkflagset $00, wActiveTriggers
+	writememory wCutsceneTrigger, CUTSCENE_S_TEMPLE_SINKING
+@end:
+	scriptend
