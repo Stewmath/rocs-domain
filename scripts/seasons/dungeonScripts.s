@@ -558,6 +558,26 @@ rocsScript_longBridge:
 	scriptend
 
 
+rocsScript_longBridge2:
+	jumpifroomflagset $20, @end
+	checkmemoryeq wActiveTriggers, $02
+
+	playsound SND_SOLVEPUZZLE
+	writeobjectbyte Interaction.var30, $43
+	orroomflag $20
+
+@loop:
+	wait 8
+	playsound SND_DOORCLOSE
+	asm15 scriptHelp.rocsScript_setBridgeTile
+	addobjectbyte Interaction.var30, $10
+	jumpifobjectbyteeq Interaction.var30, $93, @end
+	scriptjump @loop
+
+@end:
+	scriptend
+
+
 rocsScript_rocsFeet:
 	stopifitemflagset
 	spawnitem TREASURE_FEATHER, $03

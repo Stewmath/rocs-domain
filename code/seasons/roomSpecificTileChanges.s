@@ -54,6 +54,7 @@ applyRoomSpecificTileChanges:
 
 	; HACKATHON 2024
 	.dw tileReplacement_group4Map1a ; $2f
+	.dw tileReplacement_group4Map21 ; $30
 
 roomTileChangerCodeGroupTable:
 	.dw roomTileChangerCodeGroup0Data
@@ -84,6 +85,7 @@ roomTileChangerCodeGroup3Data:
 
 roomTileChangerCodeGroup4Data:
 	.db $1a $2f
+	.db $21 $30
 	.db $00
 
 roomTileChangerCodeGroup5Data:
@@ -972,5 +974,22 @@ tileReplacement_group4Map1a;
 	sub c
 	ld l,a
 	cp $07
+	jr nz,@loop
+	ret
+
+tileReplacement_group4Map21:
+	call getThisRoomFlags
+	bit 5,(hl)
+	ret z
+
+	ld hl,wRoomLayout+$43
+	ld b,TILEINDEX_VERTICAL_BRIDGE
+	ld c,$10
+@loop:
+	ld (hl),b
+	ld a,l
+	add c
+	ld l,a
+	cp $93
 	jr nz,@loop
 	ret
