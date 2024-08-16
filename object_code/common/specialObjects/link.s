@@ -4460,7 +4460,11 @@ linkUpdateInAir_sidescroll_inverted:
 	bit 7,(hl)
 	jr nz,@negativeSpeedZ
 
-	; If speedZ is positive, check if he hits the floor (TODO)
+	; If speedZ is positive, check if he hits the floor
+	ld e,SpecialObject.adjacentWallsBitset
+	ld a,(de)
+	and $30
+	jr nz,@applyGravity
 	jr @applySpeedZ
 
 @negativeSpeedZ:
@@ -4545,7 +4549,15 @@ linkUpdateInAir_sidescroll_inverted:
 	sbc $00
 	ldd (hl),a
 
-	; TODO: Cap Link's speedZ to -$0300?
+	; Cap Link's speedZ to -$0300
+	bit 7,a
+	jr z,+
+	cp $fe
+	jr nc,+
+	xor a
+	ldi (hl),a
+	ld (hl),$fd
++
 	call specialObjectUpdateAdjacentWallsBitset
 
 	; Check (again) whether Link has reached the ground.
