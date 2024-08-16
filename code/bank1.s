@@ -5001,7 +5001,7 @@ func_60cd:
 
 	call checkScreenEdgeWarps
 	ret nc
-	jr initiateScreenEdgeWarp
+	jp initiateScreenEdgeWarp
 
 ;;
 ; Checks for warps?
@@ -5013,10 +5013,15 @@ func_60e9:
 	call func_60cd
 	ret c
 
+	; ANTIGRAV: Allow warps to occur even when in the air in sidescrolling rooms. This is
+	; necessary to prevent staircase warps from glitching out when you jump or fall into them.
+	ld a,(wTilesetFlags)
+	and TILESETFLAG_SIDESCROLL
+	jr nz,+
 	ld a,(wLinkInAir)
 	and $7f
 	ret nz
-
++
 	ld a,(wWarpsDisabled)
 	or a
 	ret nz
