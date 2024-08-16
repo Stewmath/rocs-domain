@@ -132,10 +132,17 @@ nextToChestTile:
 	ld (hl),c
 
 	; Set the interaction's position variables
+	ld a,(wAntigravState)
+	cp 2
+	ld c,0
+	jr nz,+
+	ld c,$10
++
 	ld l,Interaction.yh
 	ld a,(wcca2)
 	ld b,a
 	and $f0
+	add c
 	ldi (hl),a
 	inc l
 	ld a,b
@@ -214,12 +221,17 @@ nextToSignTile:
 checkFacingBottomOfTileAndPressedA:
 	ld a,(wGameKeysJustPressed)
 	and BTN_A
-	jr z,++
+	jr nz,checkFacingBottomOfTile
+
+	pop af
+	xor a
+	ret
 
 ;;
 ; Returns from the caller of the function if Link isn't facing a wall.
 ; @param[out] zflag Set if the wall Link is facing is above him.
 checkFacingBottomOfTile:
+	push bc
 	ld a,(w1Link.direction)
 	ld hl,@data
 	rst_addAToHl
@@ -227,13 +239,25 @@ checkFacingBottomOfTile:
 	and (hl)
 	cp (hl)
 	jr nz,++
-	cp $c0
+
+	; ANTIGRAV: Check tile below Link for inverted rooms
+	push af
+	ld a,(wAntigravState)
+	cp 2
+	ld b,$c0
+	jr nz,+
+	ld b,$30
++
+	pop af
+	cp b
+	pop bc
 	ret
 
 @data:
 	.db $c0 $03 $30 $0c
 
 ++
+	pop bc
 	pop af
 	xor a
 	ret
@@ -841,9 +865,14 @@ checkAndDecKeyCount:
 ; @param[out]	a	The tile index in front of the object
 ; @param[out]	bc	The position of the tile in front
 specialObjectGetTileInFront:
+	ld a,(wAntigravState)
+	cp 2
+	ld hl,nextTileOffsets
+	jr nz,+
+	ld hl,invertedNextTileOffsets
++
 	ld e,SpecialObject.direction
 	ld a,(de)
-	ld hl,nextTileOffsets
 	rst_addDoubleIndex
 
 ;;
@@ -874,6 +903,12 @@ nextTileOffsets:
 	.db $00 $07 ; DIR_RIGHT
 	.db $08 $00 ; DIR_DOWN
 	.db $00 $f8 ; DIR_LEFT
+
+invertedNextTileOffsets:
+	.db -8, 0 ; DIR_UP
+	.db 0, 7 ; DIR_RIGHT
+	.db 4, 0 ; DIR_DOWN
+	.db 0, -8 ; DIR_LEFT
 
 ;;
 ; Checks the collisions on the tile after the next one.

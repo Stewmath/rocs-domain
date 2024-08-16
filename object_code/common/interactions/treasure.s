@@ -58,6 +58,7 @@ interactionCode60:
 
 
 ; ANTIGRAV: Certain treasures are hardcoded to be flipped
+; (Treasure chest treasures are always flipped, this is done in a different area of code)
 @checkFlippedTreasure:
 	ld e,Interaction.var30
 	ld a,(de)
@@ -266,7 +267,16 @@ interactionCode60:
 	ld (wDisableLinkCollisionsAndMenu),a
 	call interactionSetAlwaysUpdateBit
 
-	; Angle is already $00 (up), so don't need to set it
+	ld a,(wAntigravState)
+	cp 2
+	jr nz,+
+	ld l,Interaction.angle
+	ld (hl),ANGLE_DOWN
+	ld l,Interaction.oamFlags
+	ld a,(hl)
+	xor $40
+	ld (hl),a
++
 	ld l,Interaction.speed
 	ld (hl),SPEED_40
 
