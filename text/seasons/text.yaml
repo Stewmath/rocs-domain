@@ -521,7 +521,7 @@ groups:
   - name: TX_0037
     index: 0x37
     text: |-
-      You got the \col(1)Roc's Feet\col(0)! Press the button twice and see what happens!
+      You got the \col(1)Roc's Foot\col(0)! Press the button twice and see what happens!
 
   - name: TX_0038
     index: 0x38
@@ -2911,7 +2911,7 @@ groups:
   - name: TX_09_ROCS_FEET
     index: auto
     text: |-
-      Roc's Feet
+      Roc's Foot
       Press the button twice to see a new perspective.
 
 
