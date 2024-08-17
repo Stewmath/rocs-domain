@@ -35,6 +35,16 @@ polsVoice_state_uninitialized:
 	; Note: a is uninitialized; arbitrary speed
 	call ecom_setSpeedAndState8
 
+	; ANTIGRAV: Inverted pols voice
+	ld e,Enemy.subid
+	ld a,(de)
+	and $80
+	jr z,+
+	ld e,Enemy.oamFlagsBackup
+	ld a,(de)
+	or $40
+	ld (de),a
++
 	call getRandomNumber_noPreserveVars
 	ld e,Enemy.counter1
 	and $3f

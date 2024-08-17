@@ -36,6 +36,7 @@ enemyCode31:
 
 
 stalfos_state_uninitialized:
+	call ecom_antigravEnemyFlip
 	ld a,SPEED_80
 	jp ecom_setSpeedAndState8AndVisible
 

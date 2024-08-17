@@ -102,8 +102,18 @@ enemyCode24:
 
 
 likelike_state_uninitialized:
+	push bc
+	call ecom_antigravEnemyFlip
+	pop bc
+
 	bit 0,b
 	call z,objectSetVisiblec2
+
+	ld a,b
+	and $7f
+	cp 3
+	call z,ecom_setZAboveScreen
+
 	ld a,SPEED_40
 	jp ecom_setSpeedAndState8
 
@@ -427,8 +437,7 @@ likelike_subid03:
 
 ; Initialization (spawning above the screen).
 @state8:
-	call likelike_chooseRandomPosition
-	ret nz
+	ld h,d
 	ld l,Enemy.state
 	inc (hl)
 	ld l,Enemy.collisionType

@@ -1226,3 +1226,13 @@ ecom_fallToGroundAndSetState:
 	ld l,Enemy.state
 	ld (hl),b
 	ret
+
+ecom_antigravEnemyFlip:
+	ld a,(wAntigravState)
+	cp 2
+	ret nz
+	ld e,Enemy.oamFlagsBackup
+	ld a,(de)
+	xor $40
+	ld (de),a
+	ret

@@ -59,6 +59,10 @@ enemyCode34:
 
 
 zol_state_uninitialized:
+	push bc
+	call ecom_antigravEnemyFlip
+	pop bc
+
 	ld a,b
 	or a
 	ld a,SPEED_c0

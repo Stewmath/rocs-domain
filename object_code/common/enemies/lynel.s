@@ -49,6 +49,7 @@ enemyCode0d:
 
 
 @state_uninitialized:
+	call ecom_antigravEnemyFlip
 	ld e,Enemy.subid
 	ld a,(de)
 	cp $02

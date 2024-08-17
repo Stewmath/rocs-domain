@@ -40,6 +40,7 @@ enemyCode43:
 
 
 gel_state_uninitialized:
+	call ecom_antigravEnemyFlip
 	ld e,Enemy.counter1
 	ld a,$10
 	ld (de),a
