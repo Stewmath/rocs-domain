@@ -44,6 +44,8 @@ interactionCode6b:
 	.dw interactionCode6bSubid24
 	.dw interactionCode6bSubid25
 	.dw interactionCode6bSubid26
+	/* $27 */ .dw rocsCode_chestOnOtherFloor
+	          .dw rocsCode_chestOnOtherFloor_stateClearing
 
 floodgateKeeper:
 	call checkInteractionState
@@ -920,3 +922,74 @@ interactionCode6bSubid26:
 	ld hl,mainScripts.subrosianScript_templeFallenText
 	call interactionSetScript
 	jp interactionIncState
+
+
+
+; HACKATHON 2024
+
+rocsCode_chestOnOtherFloor:
+	ld e,Interaction.state
+	ld a,(de)
+	rst_jumpTable
+	.dw @state0
+	.dw @state1
+
+@state0:
+	ld a,(wActiveRoom)
+	call @getRoomBitmask
+	ld b,a
+	ld a,($cfd0)
+	ld c,a
+	xor a
+	ld ($cfd0),a
+	ld a,c
+	and b
+	jp nz,interactionDelete
+
+	call @getOtherRoom
+	ld l,a
+	ld h,>wGroup4RoomFlags
+	ld a,(hl)
+	and ROOMFLAG_ITEM
+	jp nz,interactionDelete
+
+	call interactionIncState
+	ret
+
+@state1:
+	ld a,(wNumEnemies)
+	or a
+	ret nz
+
+	ld a,SND_SOLVEPUZZLE
+	call playSound
+
+	call @getOtherRoom
+	call @getRoomBitmask
+	ld hl,$cfd0
+	or (hl)
+	ld (hl),a
+	jp interactionDelete
+
+@getOtherRoom:
+	ld a,(wActiveRoom)
+	cp $16
+	ld a,$04
+	ret z
+	ld a,$16
+	ret
+
+@getRoomBitmask:
+	cp $04
+	ld a,$01
+	ret z
+	ld a,$02
+	ret
+
+rocsCode_chestOnOtherFloor_stateClearing:
+	ld a,(wScrollMode)
+	and 8
+	jp z,interactionDelete
+	xor a
+	ld ($cfd0),a
+	jp interactionDelete

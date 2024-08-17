@@ -66,8 +66,10 @@ interactionCode20:
 	.dw mainScripts.rocsScript_longBridge
 	.dw mainScripts.rocsScript_rocsFeet
 	.dw mainScripts.rocsScript_blockFall1
-	.dw mainScripts.rocsScript_longBridge2
+	.dw mainScripts.rocsScript_longBridge2 ; $04
 	.dw mainScripts.rocsScript_blockFall2
+	.dw mainScripts.rocsScript_chestOnUpperFloor ; $06
+	.dw mainScripts.rocsScript_chestOnLowerFloor ; $07
 
 @dungeon2:
 	.dw mainScripts.snakesRemainsScript_timerForChestDisappearing

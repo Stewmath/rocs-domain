@@ -597,3 +597,20 @@ rocsScript_blockFall2:
 	writememory wCutsceneTrigger, CUTSCENE_S_TEMPLE_SINKING
 @end:
 	scriptend
+
+rocsScript_chestOnUpperFloor:
+	stopifitemflagset
+	jumpifmemoryset $cfd0, $01, @spawnChest
+	scriptend
+
+@spawnChest:
+	playsound SND_SOLVEPUZZLE
+	createpuff
+	wait 30
+	settilehere TILEINDEX_CHEST
+	scriptend
+
+rocsScript_chestOnLowerFloor:
+	stopifitemflagset
+	jumpifmemoryset $cfd0, $02, rocsScript_chestOnUpperFloor@spawnChest
+	scriptend
