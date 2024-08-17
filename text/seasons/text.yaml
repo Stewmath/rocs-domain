@@ -15981,3 +15981,18 @@ groups:
         After awakening from an interminable dream, \Link finally washes ashore...\stop
 
         But where?
+
+    - name: TX_OUTRO
+      index: auto
+      text: >-
+        \pos(2)Using the power of the Roc, Link found his way home.
+
+        The End!\stop
+
+        This hack was made by Stewmat in 5 weeks for the Zelda Oracles Hackathon 2024.\stop
+
+        Find more hacks and hacking tools on our community wiki:
+
+        zeldahacking.net\stop
+
+        Thank you for playing =)

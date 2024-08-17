@@ -1776,6 +1776,22 @@ linkState09:
 	call @seasonsFunc_05_5043
 	ret c
 
+	; HACKATHON 2024: Check for antigrav use in final room, trigger cutscene
+	ld a,(wActiveGroup)
+	cp 4
+	jr nz,++
+	ld a,(wActiveRoom)
+	cp 6
+	jr nz,++
+	call objectGetShortPosition
+	cp $27
+	jr nz,++
+
+	; Used antigrav in final room
+	ld a,$0e
+	ld (wCutsceneTrigger),a
+	ret
+++
 	; ANTIGRAV: Alternate between floors 0 and 1.
 	ld a,(wDungeonFloor)
 	xor 1

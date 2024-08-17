@@ -340,6 +340,13 @@ specialObject08AnimationDataPointers:
 	.dw animationData19bb0
 	.dw animationData19bbb
 
+	.dw animationData19cd6 ; $17: jump
+	.dw animationData_capeModified ; $18: cape
+
+animationData_capeModified:
+	.db $7f $e4 $00
+	m_AnimationLoop animationData_capeModified
+
 animationData19ac5:
 	.db $02 $55 $00
 animationLoop19ac8:

@@ -1109,7 +1109,6 @@ cutscenePregameIntroHandler:
 	.dw @stateWait1
 	.dw @stateShowText
 	.dw @stateWaitText
-	.dw @stateEnd
 
 @stateInit:
 	ld a,(wPaletteThread_mode)
@@ -1180,183 +1179,29 @@ cutscenePregameIntroHandler:
 	jp incCutsceneState
 
 @stateWaitText:
-	ld a,(wTextIsActive)
-	or a
-	ret nz
-	call decCbb3
-	ret nz
-	jp incCutsceneState
-
-@stateEnd:
-	ld hl,wGameState
-	xor a
-	ldi (hl),a
-	ld (hl),a
-	ld a,SNDCTRL_STOPMUSIC
-	call playSound
-	ld a,GLOBALFLAG_3d
-	jp setGlobalFlag
+	ret
 
 
+
+; HACKATHON 2024: Replaced this cutcene with outro
 cutsceneOnoxTaunting:
-	call cutsceneOnoxTauntingHandler
-	jp updateInteractionsAndDrawAllSprites
+	call @handler
+	jp updateAllObjects
 
-cutsceneOnoxTauntingHandler:
+@handler:
 	ld de,wCutsceneState
 	ld a,(de)
 	rst_jumpTable
-	.dw cutscene0eFunc0
-	.dw cutscene0eFunc1
-	.dw cutscene0eFunc2
-	.dw cutscene0eFunc3
-	.dw cutscene0eFunc4
-	.dw cutscene0eFunc5
-	.dw cutscene0eFunc6
-	.dw cutscene0eFunc7
-cutscene0eFunc0:
-	ld a,(wPaletteThread_mode)
-	or a
-	ret nz
-	call hideStatusBar
-	call clearDynamicInteractions
-	ld a,SNDCTRL_FAST_FADEOUT
-	call playSound
-	ld hl,$cbb3
-	ld (hl),$3c
-	ld hl,$d01a
-	res 7,(hl)
-	xor a
-	ld ($cfc0),a
-	jp incCutsceneState2
-cutscene0eFunc1:
-	call decCbb3
-	ret nz
-	ld (hl),$14
-	call incCutsceneState2
-	ld hl,$cbae
-	ld (hl),$04
-	ld bc,$1719
-	jp showText
-cutscene0eFunc2:
-	call retIfTextIsActive
-	call decCbb3
-	ret nz
-	call disableLcd
-	call getFreeInteractionSlot
-	jr nz,+
-	ld a,INTERAC_DIN
-	ld ($cc1d),a
-	ldi (hl),a
-	ld (hl),$06
-	call refreshObjectGfx
-+
-	xor a
-	ld (wScreenOffsetY),a
-	ld (wScreenOffsetX),a
-	ld a,GFXH_SCENE_INSIDE_ONOX_CASTLE
-	call loadGfxHeader
-	ld a,PALH_SEASONS_97
-	call loadPaletteHeader
-	ld a,$01
-	ld (wScrollMode),a
-	ld a,$18
-	ld (wTilesetAnimation),a
-	call loadAnimationData
-	ld a,$0d
-	call loadGfxRegisterStateIndex
-	ld hl,wGfxRegs1.SCY
-	ldi a,(hl)
-	ldh (<hCameraY),a
-	ld a,(hl)
-	ldh (<hCameraX),a
-	ld a,$18
-	ld (wTilesetAnimation),a
-	call loadAnimationData
-	xor a
-	ld ($cbb3),a
-	dec a
-	ld ($cbba),a
-	ld a,SND_LIGHTNING
-	call playSound
-	jp incCutsceneState2
-cutscene0eFunc3:
-	ld hl,$cbb3
-	ld b,$01
-	call flashScreen
-	ret z
-	xor a
-	ldh (<hFF8B),a
-	ld a,$f0
-	ld c,a
-	ld ($c4ae),a
-	call seasonsFunc_35cc
-	ld a,$ff
-	ldh (<hDirtyBgPalettes),a
-	ldh (<hDirtySprPalettes),a
-	ldh (<hBgPaletteSources),a
-	ldh (<hSprPaletteSources),a
-	ld hl,$cbb3
-	ld (hl),$3c
-	ld a,MUS_DISASTER
-	call playSound
-	jp incCutsceneState2
-cutscene0eFunc4:
-	call decCbb3
-	ret nz
-	ld (hl),$3c
-	call brightenRoom
-	ld a,$ff
-	ld ($c4b2),a
-	ld ($c4b4),a
-	xor a
-	ld ($c4b1),a
-	ld ($c4b3),a
-	jp incCutsceneState2
-cutscene0eFunc5:
-	ld a,(wPaletteThread_mode)
-	or a
-	ret nz
-	call decCbb3
-	ret nz
-	ld (hl),$5a
-	ld a,$f0
-	ld ($c4ae),a
-	call brightenRoom
-	ld a,$ff
-	ld ($c4b1),a
-	ld ($c4b3),a
-	jp incCutsceneState2
-cutscene0eFunc6:
-	call decCbb3
-	ret nz
-	call getFreeInteractionSlot
-	jr nz,+
-	ld (hl),INTERAC_DIN_IMPRISONED_EVENT
-	inc l
-	ld (hl),$05
-+
-	jp incCutsceneState2
-cutscene0eFunc7:
-	ld a,($cfc0)
-	or a
-	ret z
-	call showStatusBar
-	ld a,SNDCTRL_FAST_FADEOUT
-	call playSound
-	xor a
-	ld ($cc66),a
-	ld a,$82
-	ld ($cc63),a
-	ld a,$5d
-	ld ($cc64),a
-	xor a
-	ld ($cc65),a
-	ld a,$03
-	ld (wWarpTransition2),a
-	ret
+	.dw @stateInit
+	.dw @stateWait1
+	.dw @stateShowText
+	.dw @stateWaitText
 
-cutscene0dFunca:
+@stateInit:
+	ld a,(wPaletteThread_mode)
+	or a
+	ret nz
+
 	call disableLcd
 	ld a,($ff00+R_SVBK)
 	push af
@@ -1365,68 +1210,76 @@ cutscene0dFunca:
 	ld hl,$de80
 	ld b,$40
 	call clearMemory
+
+	; Fix sides of textbox being wrong color. Not sure why I needed to add this when it's not a
+	; problem with the normal intro cutscene.
+	ld a,$03
+	ld ($ff00+R_SVBK),a
+	ld hl,w3VramAttributes
+	ld a,$02
+	ld bc,$200
+	call fillMemoryBc
+
 	pop af
 	ld ($ff00+R_SVBK),a
 	call clearScreenVariablesAndWramBank1
 	call clearOam
+
 	ld a,PALH_0f
 	call loadPaletteHeader
+
 	ld a,$02
 	call seasonsFunc_03_7a6b
-	call seasonsFunc_03_7db8
-	ld a,MUS_ESSENCE_ROOM
-	call playSound
-	ld a,$08
-	call setLinkID
-	ld l,<w1Link.enabled
-	ld (hl),$01
-	ld l,<w1Link.subid
-	ld (hl),$0a
+	call seasonsFunc_03_7a88
+
+	;ld a,$08
+	;call setLinkID
+	;ld l,<w1Link.enabled
+	;ld (hl),$01
+	;ld l,<w1Link.subid
+	;ld (hl),$0b
+
 	ld a,$00
 	ld (wScrollMode),a
-	call incCutsceneState2
 	call clearPaletteFadeVariablesAndRefreshPalettes
 	xor a
 	ldh (<hCameraY),a
 	ldh (<hCameraX),a
+	ld a,180
+	ld (wTmpcbb3),a
 	ld a,$15
-	jp loadGfxRegisterStateIndex
-cutscene0dFuncb:
-	ld a,($cbb9)
-	cp $07
-	ret nz
-	call clearLinkObject
-	ld hl,$cbb3
-	ld (hl),$3c
-	jp incCutsceneState2
-cutscene0dFuncc:
+	call loadGfxRegisterStateIndex
+
+	ld hl,w1Link
+	ld (hl),1
+	inc l
+	ld (hl),SPECIALOBJECT_LINK_CUTSCENE
+	inc l
+	ld (hl),$0a
+
+	jp incCutsceneState
+
+@stateWait1:
 	call decCbb3
 	ret nz
-	ld hl,wGameState
-	xor a
-	ldi (hl),a
-	ld (hl),a
-	ld a,SNDCTRL_STOPMUSIC
-	call playSound
-	ld a,GLOBALFLAG_3d
-	jp setGlobalFlag
+	jp incCutsceneState
 
-seasonsFunc_03_7db8:
-	ld a,($ff00+R_SVBK)
-	push af
-	ld a,$03
-	ld ($ff00+R_SVBK),a
-	ld hl,$d800
-	ld bc,$0240
-	call clearMemoryBc
-	ld hl,$dc00
-	ld bc,$0240
-	ld a,$02
-	call fillMemoryBc
-	pop af
-	ld ($ff00+R_SVBK),a
-	ret
+@stateShowText:
+	ld a,TEXTBOXFLAG_ALTPALETTE2 | TEXTBOXFLAG_NONEXITABLE
+	ld (wTextboxFlags),a
+	ld bc,TX_OUTRO
+	call showText
+	ld a,60
+	ld (wTmpcbb3),a
+	jp incCutsceneState
 
+@stateWaitText:
+	ld a,(wTextIsActive)
+	or a
+	ret nz
+	call decCbb3
+	ret nz
+	jp incCutsceneState
 
 
 cutsceneInvertedBlockDrop:

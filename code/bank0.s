@@ -6871,6 +6871,38 @@ objectUpdateSpeedZ_paramC:
 	xor a
 	ret
 
+objectUpdateSpeedZInverse:
+	ld c,a
+	ldh a,(<hActiveObjectType)
+	add Object.z
+	ld e,a
+	add Object.speedZ - Object.z
+	ld l,a
+	ld h,d
+	call add16BitRefs
+	bit 7,a
+	jr z,@belowGround
+
+; Above ground
+	dec l
+	ld a,(hl)
+	sub c
+	ldi (hl),a
+	ld a,(hl)
+	sbc $00
+	ld (hl),a
+	or d
+	ret
+
+; Can't be below ground, set z position to 0
+@belowGround:
+	xor a
+	ld (de),a
+	dec e
+	ld (de),a
+	xor a
+	ret
+
 ;;
 ; Updates an object's speedZ in a way that works with sidescrolling areas. This assumes
 ; that the object's width has a particular value (8 pixels?), but its height can be

@@ -1075,97 +1075,107 @@ linkCutsceneA:
 	rst_jumpTable
 	.dw @state0
 	.dw @state1
+	.dw @state2
+	.dw @state3
 
 @state0:
 	call linkCutscene_initOam_setVisible_incState
 	call objectSetVisible81
 
-	ld l,SpecialObject.counter1
-	ld (hl),$2c
-	inc hl
-	ld (hl),$01
+	ld a,DIR_RIGHT
+	ld l,SpecialObject.direction
+	ld (hl),a
+
+	ld l,SpecialObject.speedZ
+	ld (hl),<(-$3c0)
+	inc l
+	ld (hl),>(-$3c0)
+
 	ld l,SpecialObject.yh
-	ld (hl),$d0
+	ld (hl),$90
 	ld l,SpecialObject.xh
 	ld (hl),$50
 
-	ld a,$08
+	ld a,$17
 	call specialObjectSetAnimation
-	xor a
-	ld (wTmpcbb9),a
-
-.ifdef ROM_AGES
-	ldbc INTERAC_SPARKLE, $0d
-.else
-	ldbc INTERAC_SPARKLE, $09
-.endif
-	call objectCreateInteraction
-	jr nz,@state1
-	ld l,Interaction.relatedObj1
-	ld a,SpecialObject.start
-	ldi (hl),a
-	ld (hl),d
 
 @state1:
-	ld a,(wFrameCounter)
-	ld ($cbb7),a
-	ld e,SpecialObject.substate
-	ld a,(de)
-	rst_jumpTable
-	.dw @substate0
-	.dw @substate1
-	.dw @substate2
-	.dw @substate3
+	ld a,$10
+	call objectUpdateSpeedZ
 
-@substate0:
-	call linkCutscene_oscillateZ_2
-	ld hl,w1Link.counter1
-	call decHlRef16WithCap
-	ret nz
-
-	ld (hl),$3c
-	jp itemIncSubstate
-
-@substate1:
-	call linkCutscene_oscillateZ_2
-	call itemDecCounter1
-	ret nz
-
-	call itemIncSubstate
-.ifdef ROM_AGES
-	ld bc,TX_1213
-.else
-	ld bc,TX_0c16
-.endif
-	jp showText
-
-@substate2:
-	ld hl,linkCutscene_zOscillation1
-	call linkCutscene_oscillateZ
-	ld a,(wTextIsActive)
-	or a
-	ret nz
-
-	ld a,$06
-	ld (wTmpcbb9),a
-	ld a,SND_FAIRYCUTSCENE
-	call playSound
-	jp linkCutscene_createGlowingOrb
-
-@substate3:
-	ld e,SpecialObject.animParameter
-	ld a,(de)
-	inc a
+	ld l,SpecialObject.speedZ+1
+	ld a,(hl)
+	bit 7,a
 	jr nz,+
-	ld a,$07
-	ld (wTmpcbb9),a
-	ret
+
+	; Reached inflection
+	xor a
+	ld l,SpecialObject.state
+	inc (hl)
+	ld a,$18
+	call specialObjectSetAnimation
+	ld a,SND_THROW
+	call playSound
 +
 	call specialObjectAnimate
-	ld a,(wFrameCounter)
-	rrca
-	jp nc,objectSetInvisible
 	jp objectSetVisible
+
+.define SPEED_CAP $08
+.define GRAVITY $01
+.define TOP $8c
+.define BOTTOM $90
+
+@state2:
+	ld e,SpecialObject.zh
+	ld a,(de)
+	cp BOTTOM
+	jr c,++
+	ld e,SpecialObject.state
+	ld a,3
+	ld (de),a
+	jr @state3
+++
+	ld a,GRAVITY
+	call objectUpdateSpeedZ
+
+	ld h,d
+	ld l,SpecialObject.speedZ+1
+	ld a,(hl)
+	bit 7,a
+	jr nz,+
+	dec l
+	ld a,(hl)
+	cp SPEED_CAP
+	jr c,+
+	ld (hl),SPEED_CAP
++
+	jp specialObjectAnimate
+
+@state3:
+	ld e,SpecialObject.zh
+	ld a,(de)
+	cp TOP
+	jr nc,++
+	ld e,SpecialObject.state
+	ld a,2
+	ld (de),a
+	jr @state2
+++
+	ld a,GRAVITY
+	call objectUpdateSpeedZInverse
+
+	ld h,d
+	ld l,SpecialObject.speedZ+1
+	ld a,(hl)
+	bit 7,a
+	jr z,+
+	dec l
+	ld a,(hl)
+	cp -SPEED_CAP
+	jr nc,+
+	ld (hl),-SPEED_CAP
++
+	jp specialObjectAnimate
 
 
 linkCutscene_oscillateZ_2:

@@ -1203,8 +1203,6 @@ group4Map43EnemyObjectData:
 	obj_EndPointer
 
 group4Map45EnemyObjectData:
-	obj_Part $09 $80 $95
-	obj_SpecificEnemyA $00 $35 $00 $40 $00
 	obj_EndPointer
 
 group4Map46EnemyObjectData:
