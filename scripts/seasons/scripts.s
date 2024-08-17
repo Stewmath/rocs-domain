@@ -985,51 +985,16 @@ sokraScript_needSummerForD3:
 
 ; Running around when baby just born
 bipinScript0:
-	setcollisionradii $06, $06
-	makeabuttonsensitive
-@loop:
-	checkabutton
-	jumpifmemoryeq wChildStatus, $00, @stillUnnamed
-	showtext TX_4301
-	scriptjump @loop
-@stillUnnamed:
-	showtext TX_4300
-	scriptjump @loop
 
 
 ; Bipin gives you a random tip
 bipinScript1:
-	initcollisions
-@loop:
-	checkabutton
-	setdisabledobjectsto91
-	setanimation $02
-	asm15 scriptHelp.bipin_showText_subid1To9
-	wait 30
-	callscript bipinSayRandomTip
-	enableallobjects
-	scriptjump @loop
 
 
 ; Bipin just moved to Labrynna/Holodrum?
 bipinScript2:
-	initcollisions
-@loop:
-	checkabutton
-	setdisabledobjectsto91
-	asm15 scriptHelp.bipin_showText_subid1To9
-	enableallobjects
-	scriptjump @loop
 
 bipinSayRandomTip:
-	; Show a random text index from TX_4309-TX_4310
-	writeobjectbyte  Interaction.textID+1, >TX_4300
-	getrandombits    Interaction.textID,   $07
-	addobjectbyte    Interaction.textID,   <TX_4309
-	showloadedtext
-
-	setanimation $03
-	retscript
 
 
 .ifdef ROM_AGES
@@ -1043,39 +1008,9 @@ bipinScript3:
 ; INTERAC_BIRD
 ; ==================================================================================================
 knowItAllBirdScript:
-	setcollisionradii $08, $08
-	makeabuttonsensitive
-@loop:
-	checkabutton
-	setdisabledobjectsto91
-	cplinkx Interaction.direction
-	writeobjectbyte Interaction.var37, $01 ; Signal to start spazzing out
-	showloadedtext
-	jumpiftextoptioneq $01, @doneTalking
-
-	wait 30
-	addobjectbyte Interaction.textID, $0a
-	showloadedtext
-	addobjectbyte Interaction.textID, -$0a
-
-@doneTalking:
-	enableallobjects
-	writeobjectbyte Interaction.var37, $00
-	scriptjump @loop
 
 
 panickingBirdScript:
-	setcollisionradii $06, $06
-	makeabuttonsensitive
-@loop:
-	checkabutton
-	setdisabledobjectsto11
-	cplinkx Interaction.direction
-	writeobjectbyte Interaction.var37, $01 ; Signal to start spazzing out
-	showtext TX_0503
-	writeobjectbyte $77, $00
-	enableallobjects
-	scriptjump @loop
 
 
 ; ==================================================================================================
@@ -1084,45 +1019,6 @@ panickingBirdScript:
 
 ; Blossom asking you to name her child
 blossomScript0:
-	initcollisions
-	asm15 scriptHelp.checkc6e2BitSet, $00
-	jumpifobjectbyteeq Interaction.var3b, $01, @nameAlreadyGiven
-@loop:
-	checkabutton
-	setdisabledobjectsto91
-	showtextlowindex <TX_4400
-
-@askForName:
-	asm15 scriptHelp.blossom_openNameEntryMenu
-	wait 30
-	jumptable_memoryaddress wTextInputResult
-	.dw @validName
-	.dw @invalidName
-
-@invalidName:
-	showtextlowindex <TX_440a
-	enableinput
-	scriptjump @loop
-
-@validName:
-	showtextlowindex <TX_4407
-	disableinput
-	jumptable_memoryaddress wSelectedTextOption
-	.dw @nameConfirmed
-	.dw @askForName
-
-@nameConfirmed:
-	asm15 scriptHelp.blossom_decideInitialChildStatus
-	asm15 scriptHelp.setc6e2Bit, $00
-	asm15 scriptHelp.setNextChildStage, $01
-	wait 30
-	showtextlowindex <TX_4408
-	enableinput
-
-@nameAlreadyGiven:
-	checkabutton
-	showtextlowindex <TX_4409
-	scriptjump @nameAlreadyGiven
 
 
 ; Blossom asking for money to see a doctor

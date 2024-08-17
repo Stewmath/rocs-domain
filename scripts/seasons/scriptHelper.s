@@ -3271,3 +3271,56 @@ rocsScript_setBridgeTile:
 	ld c,a
 	ld a,TILEINDEX_VERTICAL_BRIDGE
 	jp setTile
+
+
+rocsScript_gauntlet_closeNext:
+	ld h,d
+	ld l,Interaction.var31
+	ld a,(hl)
+	inc (hl)
+	push af
+	ld e,Interaction.var32
+	ld a,(de)
+	ld hl,@tables
+	rst_addDoubleIndex
+	ldi a,(hl)
+	ld h,(hl)
+	ld l,a
+	pop af
+	rst_addAToHl
+	ld a,(hl)
+	or a
+	jr z,@end
+	ld c,a
+	jp objectSetShortPosition
+@end:
+	ld e,Interaction.var30
+	ld a,$ff
+	ld (de),a
+	ret
+
+
+@tables:
+	.dw @closeTable1
+	.dw @closeTable2
+	.dw @openTable
+
+@closeTable1:
+	.db $16 $15 $14 $13 $12
+	.db $22 $32 $42 $52 $62 $72
+	.db $73 $74 $75 $76
+	.db $00
+
+@closeTable2:
+	.db $18 $19 $1a $1b $1c
+	.db $2c $3c $4c $5c $6c $7c
+	.db $7b $7a $79 $78
+	.db $00
+
+@openTable:
+	.db $17 $17
+	.db $16 $18 $15 $19 $14 $1a $13 $1b $12 $1c
+	.db $22 $2c $32 $3c $42 $4c $52 $5c $62 $6c $72 $7c
+	.db $73 $7b $74 $7a $75 $79 $76 $78
+	.db $77 $77
+	.db $00

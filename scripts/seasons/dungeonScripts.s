@@ -614,3 +614,106 @@ rocsScript_chestOnLowerFloor:
 	stopifitemflagset
 	jumpifmemoryset $cfd0, $02, rocsScript_chestOnUpperFloor@spawnChest
 	scriptend
+
+rocsScript_gauntlet1:
+	stopifitemflagset
+	checkflagset 0, wActiveTriggers
+	writeobjectbyte Interaction.var32, $00
+
+@loop:
+	wait 5
+	asm15 scriptHelp.rocsScript_gauntlet_closeNext
+	jumpifobjectbyteeq Interaction.var30, $ff, @end
+	createpuff
+	settilehere $ed
+	scriptjump @loop
+@end:
+	scriptjump rocsScript_gauntlet_start
+
+rocsScript_gauntlet2:
+	stopifitemflagset
+	checkflagset 1, wActiveTriggers
+	writeobjectbyte Interaction.var32, $01
+
+	scriptjump rocsScript_gauntlet1@loop
+
+rocsScript_gauntlet_start:
+	; Ensure only one script is running
+	jumpifmemoryeq wRoomLayout+$76, $a2, @end
+	jumpifmemoryeq wRoomLayout+$78, $a2, @end
+
+	setmusic MUS_MINIBOSS
+	wait 15
+
+	setcoords $28, $38
+	callscript @spawnZol
+	setcoords $28, $b8
+	callscript @spawnZol
+	setcoords $68, $38
+	callscript @spawnZol
+	setcoords $68, $b8
+	callscript @spawnZol
+
+	spawnenemy ENEMY_LIKE_LIKE, $83, $48, $78
+
+	checknoenemies
+
+	setcoords $28, $38
+	callscript @spawnStalfos
+	setcoords $28, $b8
+	callscript @spawnStalfos
+	setcoords $68, $38
+	callscript @spawnStalfos
+	setcoords $68, $b8
+	callscript @spawnMoldorm
+
+	checknoenemies
+
+	setcoords $28, $38
+	createpuff
+	spawnenemyhere ENEMY_LYNEL, $00
+	setcoords $68, $b8
+	createpuff
+	spawnenemyhere ENEMY_LYNEL, $00
+
+	checknoenemies
+
+	scriptjump @gauntletDone
+
+@spawnZol:
+	createpuff
+	spawnenemyhere ENEMY_ZOL, $01
+	retscript
+
+@spawnStalfos:
+	createpuff
+	spawnenemyhere ENEMY_STALFOS, $00
+	retscript
+
+@spawnMoldorm:
+	createpuff
+	spawnenemyhere ENEMY_MOLDORM, $00
+	retscript
+
+@gauntletDone:
+	setmusic MUS_GNARLED_ROOT_DUNGEON
+	writeobjectbyte Interaction.var31, $00
+	writeobjectbyte Interaction.var32, $02
+	writeobjectbyte Interaction.var30, $00
+
+@loop:
+	wait 5
+	asm15 scriptHelp.rocsScript_gauntlet_closeNext
+	jumpifobjectbyteeq Interaction.var30, $ff, @lastEnd
+	createpuff
+	settilehere $a2
+	asm15 scriptHelp.rocsScript_gauntlet_closeNext
+	createpuff
+	settilehere $a2
+	scriptjump @loop
+
+@lastEnd:
+	playsound SND_SOLVEPUZZLE
+
+@end:
+	scriptend

@@ -2290,6 +2290,11 @@ group1Map8fObjectData:
 	obj_End
 
 group4Map01ObjectData:
+	obj_Part $09 $00 $95
+	obj_Part $09 $01 $99
+	obj_Interaction $20 $09
+	obj_Interaction $20 $08
+	obj_Pointer group4Map01EnemyObjectData
 	obj_End
 
 group4Map03ObjectData:

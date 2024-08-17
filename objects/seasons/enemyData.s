@@ -921,8 +921,8 @@ group4Map03EnemyObjectData:
 	obj_EndPointer
 
 group4Map04EnemyObjectData:
-	obj_RandomEnemy $21 $31 $00
-	obj_RandomEnemy $41 $10 $80
+	obj_RandomEnemy $21 $31 $03
+	obj_RandomEnemy $41 $10 $00
 	obj_RandomEnemy $21 $23 $00
 	obj_EndPointer
 
@@ -2468,4 +2468,7 @@ group4Map1cEnemyObjectData:
 
 group4Map10EnemyObjectData:
 	obj_RandomEnemy $a4 $32 $00
+	obj_EndPointer
+
+group4Map01EnemyObjectData:
 	obj_EndPointer
