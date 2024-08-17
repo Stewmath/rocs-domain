@@ -102,48 +102,21 @@ poisonMothsLairScript_bossDeath:
 	settilehere $45
 
 poisonMothsLair_coordsForHeartContainer:
-	stopifitemflagset
-	setcoords $20, $78
-	scriptjump spawnHeartContainerHere
 
 
 poisonMothsLairScript_openEssenceDoorIfBossBeat:
-	asm15 scriptHelp.D3openEssenceDoorIfBossBeat_body
-	scriptend
 
 
 dancingDragonScript_spawnStairsToB1:
-	stopifroomflag80set
-	checknoenemies
-	orroomflag $80
-	spawninteraction INTERAC_PUFF, $00, $38, $98
-	wait 8
-	settilehere TILEINDEX_SOUTH_STAIRS
-	playsound SND_SOLVEPUZZLE
-	scriptend
 
 
 dancingDragonScript_torchesHallway:
-	jumpifroomflagset $80, @spawnChest
-	checkmemoryeq wNumTorchesLit, $03
-	orroomflag $80
-	wait 8
-@spawnChest:
-	stopifitemflagset
-	scriptjump spawnChestAfterPuff
 
 
 dancingDragonScript_spawnBossKey:
-	stopifitemflagset
-	spawnitem TREASURE_BOSS_KEY, $02
-	scriptend
 
 
 dancingDragonScript_pushingPotsRoom:
-	stopifitemflagset
-	checkmemoryeq wActiveTriggers, $ff
-	spawnitem TREASURE_SMALL_KEY, $01
-	scriptend
 
 
 dancingDragonScript_bridgeInB2:
@@ -716,4 +689,35 @@ rocsScript_gauntlet_start:
 	playsound SND_SOLVEPUZZLE
 
 @end:
+	scriptend
+
+rocsScript_bossUpstairs:
+	stopifroomflag80set
+
+	jumpifmemoryset wScrollMode, $08, @justEntered
+
+	settilehere $7b
+	scriptjump @common
+
+@justEntered:
+	; Close
+	spawninteraction INTERAC_DOOR_CONTROLLER, $13, $50, $00
+
+@common:
+	checkflagset 7, wGroup4RoomFlags+$19
+
+	; Open
+	spawninteraction INTERAC_DOOR_CONTROLLER, $0b, $50, $00
+	scriptend
+
+
+rocsScript_bossDownstairs:
+	stopifroomflag80set
+
+	settilehere $79
+
+	checkflagset 7, wGroup4RoomFlags+$19
+
+	; Open
+	spawninteraction INTERAC_DOOR_CONTROLLER, $09, $8e, $00
 	scriptend

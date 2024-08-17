@@ -4184,6 +4184,11 @@ checkPlayRoomMusic:
 +
 .endif
 
+	; HACKATHON 2024: Fix multi-room boss music
+	ld a,(wTmpcfc0.mothulaFight.fightState)
+	or a
+	ret nz
+
 	ld a,(wActiveMusic)
 	or a
 	ret z

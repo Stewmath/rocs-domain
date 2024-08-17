@@ -72,6 +72,9 @@ interactionCode20:
 	.dw mainScripts.rocsScript_chestOnLowerFloor ; $07
 	.dw mainScripts.rocsScript_gauntlet1 ; $08
 	.dw mainScripts.rocsScript_gauntlet2 ; $09
+	.dw mainScripts.rocsScript_gauntlet2 ; $0a
+	.dw mainScripts.rocsScript_bossUpstairs	; $0b
+	.dw mainScripts.rocsScript_bossDownstairs	; $0c
 
 @dungeon2:
 	.dw mainScripts.snakesRemainsScript_timerForChestDisappearing

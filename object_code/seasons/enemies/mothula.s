@@ -10,6 +10,10 @@
 ;   var36: If nonzero, spawns baby moths instead of ring of fire
 ;   var37: Counter until mothula will shoot a fireball (while circling around room)
 ; ==================================================================================================
+
+.define MOTHULA_FIGHT_CHANGE_HEALTH $30
+.define MOTHULA_FIGHT_FINAL_STATE 2
+
 enemyCode7a:
 	jr z,@normalStatus
 	sub ENEMYSTATUS_NO_HEALTH
@@ -36,31 +40,83 @@ enemyCode7a:
 	.dw mothula_stateD
 	.dw mothula_stateE
 	.dw mothula_stateF
+	.dw mothula_state10
+	.dw mothula_state11
 
 @dead:
-	call getThisRoomFlags
-	set 7,(hl)
-
-	; Set bit 7 of room flag in room 1 floor below
+	; Set bit 7 of room flag in both rooms
 	ld a,(wDungeonFlagsAddressH)
 	ld h,a
-	ld l,$43
+	ld l,$1b
 	set 7,(hl)
+	ld l,$19
+	set 7,(hl)
+	xor a
+	ld (wTmpcfc0.mothulaFight.fightState),a
 	jp enemyBoss_dead
 
 
 mothula_state_uninitialized:
+	ld a,(wTmpcfc0.mothulaFight.occupyingRoom)
+	or a
+	ld b,$19
+	jr z,+
+	ld b,$1b
++
+	ld a,(wActiveRoom)
+	cp b
+	jp nz,enemyDelete
+
+	ld a,(wTmpcfc0.mothulaFight.fightState)
+	or a
+	jr z,@fightJustStarted
+
+	ld e,Enemy.zh
+	ld a,$fe
+	ld (de),a
+	ld e,Enemy.state
+	ld a,9
+	ld (de),a
+	ld h,d
+	ld l,Enemy.counter1
+	ld (hl),30
+	jr ++
+
+@fightJustStarted:
+	call enemyBoss_initializeRoomWithoutExtraGfx
+	ld c,$10
+	call ecom_setZAboveScreen
+
+	ld a,$01
+	ld (wTmpcfc0.mothulaFight.fightState),a
+	call ecom_setSpeedAndState8
+	ld h,d
+	ld l,Enemy.counter1
+	ld (hl),60
+++
+
+	ld a,(wTmpcfc0.mothulaFight.fightState)
+	cp MOTHULA_FIGHT_FINAL_STATE
+	ld a,$20
+	jr z,+
+	ld a,$50
++
+	; Starts with this health at the beginning of each stage
+	ld e,Enemy.health
+	ld (de),a
+
 	ld a,ENEMY_MOTHULA
-	ld b,PALH_SEASONS_82
-	call enemyBoss_initializeRoom
+	ld (wEnemyIDToLoadExtraGfx),a
+	ld a,PALH_SEASONS_82
+	call loadPaletteHeader
 
 	ld bc,$0108
 	call enemyBoss_spawnShadow
-	ret nz
 
-	call ecom_setSpeedAndState8
-	ld c,$10
-	jp ecom_setZAboveScreen
+	call objectSetVisible81
+
+	call mothula_setTargetPositionToLeftOrRightSide
+	ret
 
 
 mothula_state_stub:
@@ -68,8 +124,6 @@ mothula_state_stub:
 
 
 mothula_state8:
-	call objectSetVisible81
-
 	ld a,(wFrameCounter)
 	and $1f
 	ld a,SND_AQUAMENTUS_HOVER
@@ -86,10 +140,6 @@ mothula_state8:
 	; Reached ground
 	ld l,Enemy.state
 	inc (hl) ; [state] = 9
-
-	ld l,Enemy.counter1
-	ld (hl),60
-	call mothula_setTargetPositionToLeftOrRightSide
 
 	ld a,MUS_BOSS
 	ld (wActiveMusic),a
@@ -219,14 +269,27 @@ mothula_stateD:
 
 ; Standing in place
 mothula_stateE:
+	; ANTIGRAV: Go back to previous room if health reduced enough
+	ld a,(wTmpcfc0.mothulaFight.fightState)
+	cp MOTHULA_FIGHT_FINAL_STATE
+	jr z,++
+	ld e,Enemy.health
+	ld a,(de)
+	cp MOTHULA_FIGHT_CHANGE_HEALTH
+	jr nc,++
+	ld e,Enemy.state
+	ld a,$10
+	ld (de),a
+	ret
+++
 	call ecom_decCounter1
 	jr z,++
 	call mothula_updateZPosAndOamFlagsForStateE
 	jr mothula_animate
 ++
-	inc l
+	ld l, Enemy.counter1
 	ld (hl),30 ; [counter1]
-	ld l,e
+	ld l,Enemy.state
 	inc (hl) ; [state] = $0f
 
 	ld l,Enemy.zh
@@ -256,6 +319,49 @@ mothula_stateF:
 	ld (hl),$00 ; [counter1]
 
 	jp mothula_setTargetPositionToLeftOrRightSide
+
+
+
+; ANTIGRAV: Decided to go back up
+mothula_state10:
+	ld hl,wTmpcfc0.mothulaFight.occupyingRoom
+	ld a,(hl)
+	xor 1
+	ld (hl),a
+
+	ld hl,wTmpcfc0.mothulaFight.fightState
+	inc (hl)
+
+	ld h,d
+	ld l,Enemy.state
+	inc (hl)
+
+; ANTIGRAV: Going back up
+mothula_state11:
+	ld h,d
+	ld l,Enemy.speedZ
+	ld (hl),<(-$180)
+	inc l
+	ld (hl),>(-$180)
+	ld e,Enemy.zh
+	ld a,(de)
+	bit 7,a
+	jr z,@keepMoving
+	ld b,a
+	push bc
+	call objectGetZAboveScreen
+	pop bc
+	cp b
+	jr c,@keepMoving
+
+	; Left the screen
+	jp enemyDelete
+
+@keepMoving:
+	ld c,0
+	call objectUpdateSpeedZ_paramC
+	call mothula_animate
+	ret
 
 
 ;;

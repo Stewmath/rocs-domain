@@ -3000,6 +3000,14 @@ wRoomLayoutEnd: ; $cfc0
 	dataEnd:
 		.db
 
+.nextu mothulaFight
+	filler1: ; $cfc0
+		dsb $18
+	occupyingRoom:
+		db
+	fightState:
+		db
+
 .nextu targetCarts
 
 	filler1: ; $cfc0

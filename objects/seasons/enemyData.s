@@ -2472,3 +2472,7 @@ group4Map10EnemyObjectData:
 
 group4Map01EnemyObjectData:
 	obj_EndPointer
+
+group4Map1bBeforeEventObjectData:
+	obj_SpecificEnemyA 0 $7a $00 $58 $78
+	obj_EndPointer
