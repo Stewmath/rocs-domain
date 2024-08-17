@@ -1522,6 +1522,9 @@ cutsceneInvertedBlockDrop:
 	call loadGfxRegisterStateIndex
 
 	callab bank1.updateGfxRegs2Scroll
+
+	xor a
+	ld (w1Link.enabled),a
 	ret
 
 @fadein1:
@@ -1667,18 +1670,43 @@ cutsceneInvertedBlockDrop:
 	jp incCutsceneState
 
 @backToGame:
-	call getThisRoomFlags
+	ld hl,@flagList
+	ld a,(wActiveRoom)
+	ld e,a
+	call lookupKey
+	jp nc,panic
+	dec a
+	rst_addAToHl
+
+	ld d,>wGroup4RoomFlags
+@@flagLoop:
+	ldi a,(hl)
+	or a
+	jr z,++
+	ld e,a
+	ld a,(de)
 	or $40
-	ld (hl),a
-	dec l ; Room above
-	ld a,(hl)
-	or $40
-	ld (hl),a
+	ld (de),a
+	jr @@flagLoop
+++
+	ld a,1
+	ld (w1Link.enabled),a
 
 	xor a
 	ld (wCutsceneIndex),a
 	ld (wGameState),a
 	ret
+
+@flagList:
+	.db $22, @fall1Flags-CADDR
+	.db $24, @fall2Flags-CADDR
+	.db $00
+
+@fall1Flags:
+	.db $21 $22 $00
+
+@fall2Flags:
+	.db $15 $24 $07 $00
 
 @copyPalette:
 	ld b,2
@@ -1717,6 +1745,12 @@ cutsceneInvertedBlockDrop:
 
 @table1:
 	.db $21, @room21Data1 - CADDR
+	.db $07, @room07Data1 - CADDR
+	.db $00
+
+@table2:
+	.db $21, @room21Data2 - CADDR
+	.db $15, @room07Data2 - CADDR
 	.db $00
 
 @room21Data1:
@@ -1729,10 +1763,6 @@ cutsceneInvertedBlockDrop:
 	.db $21 ; Room to revert to
 	.db $5b ; Tile position
 
-@table2:
-	.db $21, @room21Data2 - CADDR
-	.db $00
-
 @room21Data2:
 	.db $04 $22 ; Dest room
 	.db $00 $50 ; Camera
@@ -1742,6 +1772,26 @@ cutsceneInvertedBlockDrop:
 	.db 32 ; # of frames
 	.db $21 ; Room to revert to
 	.db $5b ; Tile position (off by 1 vertical tile? *shrug*)
+
+@room07Data1:
+	.db $04 $15 ; Dest room
+	.db $00 $28 ; Camera
+	.db $00 ; Antigrav state
+	.db $50 $48 ; Start position
+	.db -$20 ; Gravity
+	.db 40 ; # of frames
+	.db $07 ; Room to revert to
+	.db $67 ; Tile position
+
+@room07Data2:
+	.db $04 $24 ; Dest room
+	.db $00 $28 ; Camera
+	.db $02 ; Antigrav state
+	.db $80 $48 ; Start position
+	.db -$20 ; Gravity
+	.db 27 ; # of frames
+	.db $07 ; Room to revert to
+	.db $67 ; Tile position (off by 1 vertical tile? *shrug*)
 
 @oamData:
 	.db 2

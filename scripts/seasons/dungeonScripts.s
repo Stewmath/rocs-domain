@@ -590,3 +590,10 @@ rocsScript_blockFall1:
 	writememory wCutsceneTrigger, CUTSCENE_S_TEMPLE_SINKING
 @end:
 	scriptend
+
+rocsScript_blockFall2:
+	jumpifroomflagset $40, @end
+	checkflagset $00, wActiveTriggers
+	writememory wCutsceneTrigger, CUTSCENE_S_TEMPLE_SINKING
+@end:
+	scriptend

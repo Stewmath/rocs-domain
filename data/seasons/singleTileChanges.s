@@ -50,8 +50,10 @@ singleTileChangeGroup3Data:
 	.db $00 $00
 
 singleTileChangeGroup4Data:
-	.db $22 $40 $4b $a2
+	.db $22 $40 $4b $a2 ; Pot fall 1
 	.db $21 $40 $4b $a2
+	.db $15 $40 $57 $a2 ; Pot fall 2
+	.db $24 $40 $57 $a2
 	.db $00 $00
 
 singleTileChangeGroup5Data:
