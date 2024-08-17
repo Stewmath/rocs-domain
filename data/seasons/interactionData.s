@@ -260,7 +260,7 @@ interaction60SubidData:
 	m_InteractionSubidData $60 $0a $40
 	m_InteractionSubidData $60 $0c $40
 	m_InteractionSubidData $60 $0e $50
-	m_InteractionSubidData $5f $10 $10
+	m_InteractionSubidData $60 $10 $40
 	m_InteractionSubidData $60 $12 $50
 	m_InteractionSubidData $60 $14 $10
 	m_InteractionSubidData $60 $16 $40

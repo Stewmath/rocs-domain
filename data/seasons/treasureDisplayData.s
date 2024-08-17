@@ -164,6 +164,7 @@ treasureDisplayData_shield:
 treasureDisplayData_feather:
 	.db TREASURE_FEATHER,            $96, $04, $00, $00, $00, <TX_092c
 	.db TREASURE_FEATHER,            $97, $05, $00, $00, $00, <TX_093e
+	.db TREASURE_FEATHER,            $98, $04, $00, $00, $00, <TX_09_ROCS_FEET
 
 treasureDisplayData_boomerang:
 	.db TREASURE_BOOMERANG,          $9c, $05, $00, $00, $00, <TX_0927

@@ -2908,6 +2908,13 @@ groups:
       The season is
       winter.
 
+  - name: TX_09_ROCS_FEET
+    index: auto
+    text: |-
+      Roc's Feet
+      Press the button twice to see a new perspective.
+
+
   # CROSSITEMS: Text for Ages items on the subscreen.
   - name: TX_09_MERMAIDSUIT
     index: auto
