@@ -240,3 +240,13 @@ partCommon_incSubstate:
 	ld l,Part.substate
 	inc (hl)
 	ret
+
+partCommon_antigravFlip:
+	ld a,(wAntigravState)
+	cp 2
+	ret nz
+	ld e,Part.oamFlags
+	ld a,(de)
+	xor $40
+	ld (de),a
+	ret

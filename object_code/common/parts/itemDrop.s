@@ -50,6 +50,8 @@ partCode01:
 @normalItem:
 	call itemDrop_initGfx
 
+	call partCommon_antigravFlip
+
 	ld h,d
 	ld l,Part.speedZ
 	ld a,<(-$160)
