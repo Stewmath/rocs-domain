@@ -1799,8 +1799,27 @@ linkState09:
 
 	call getActiveRoomFromDungeonMapPosition
 	ld (wWarpDestRoom),a
+
+	ld a,(wAntigravState)
+	cp 2
+	jr z,@getInvertedPosition
 	call objectGetShortPosition
 	ld (wWarpDestPos),a
+	jr ++
+
+	; Need to do this to avoid warping to the wrong tile. Test this around holes.
+@getInvertedPosition:
+	ld e,SpecialObject.yh
+	ld a,(de)
+	sub 5
+	ld (de),a
+	call objectGetShortPosition
+	ld (wWarpDestPos),a
+	ld e,SpecialObject.yh
+	ld a,(de)
+	add 5
+	ld (de),a
+++
 	ld a,(wActiveGroup)
 	or $80
 	ld (wWarpDestGroup),a
