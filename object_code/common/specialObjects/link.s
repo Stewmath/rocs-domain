@@ -1828,17 +1828,23 @@ linkState09:
 	ld a,$03
 	ld (wWarpTransition2),a
 	ret
+
+; Substate 2, blocks transition
 @substate2:
 	call @seasonsFunc_05_5043
 	ret c
+
+	ld a,SND_LINK_FALL
+	call playSound
 	ld a,$01
 	ld (wScrollMode),a
+	ld h,d
 	ld l,SpecialObject.substate
 	inc (hl)
 	ld l,SpecialObject.counter1
 	ld (hl),$1e
-	ld a,$08
-	call setScreenShakeCounter
+	;ld a,$08
+	;call setScreenShakeCounter
 	ld a,LINK_ANIM_MODE_COLLAPSED
 	jp specialObjectSetAnimation
 
@@ -1867,8 +1873,21 @@ linkState09:
 	ret nz
 	dec l
 	inc (hl)
-	ld bc,-$100
-	jp objectSetSpeedZ
+
+	ld h,d
+	ld l,<w1Link.zh
+	ld (hl),0
+	ld l,<w1Link.invincibilityCounter
+	ld (hl),30
+	ld a,(wLinkHealth)
+	sub 2
+	jr nc,+
+	xor a
++
+	ld (wLinkHealth),a
+	xor a
+	ld (wLinkInAir),a
+	jp initLinkStateAndAnimateStanding
 
 @substate4:
 	ld c,$20

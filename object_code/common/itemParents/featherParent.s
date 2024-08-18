@@ -219,8 +219,14 @@ parentItemCode_feather:
 	ld a,LINK_STATE_BOUNCING_ON_TRAMPOLINE
 	ld (wLinkForceState),a
 
-	; Write $00 to wcc50 to allow the warp to occur, $01 to block it
+	; Write $00 to wcc50 to allow the warp to occur, $01 to block it.
+	; Allow it to occur only when in the dungeon.
+	ld a,(wDungeonIndex)
+	inc a
 	ld a,$00
+	jr nz,+
+	ld a,$01
++
 	ld (wcc50),a
 
 	jp @deleteParent
