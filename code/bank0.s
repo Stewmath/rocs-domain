@@ -11231,6 +11231,10 @@ initializeRoom:
 updateAntigravState:
 	; ANTIGRAV: Update antigrav state when moving between rooms (1 for top-down, 2 for
 	; sidescroll)
+	ld a,(wDungeonIndex)
+	inc a
+	ld a,0
+	jr z,+
 	ld a,(wTilesetFlags)
 	and TILESETFLAG_SIDESCROLL
 	jr nz,++
