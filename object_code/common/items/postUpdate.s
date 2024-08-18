@@ -255,11 +255,12 @@ itemInitializeFromLinkPosition:
 	ld e,Item.yh
 	ld (de),a
 
-	; Sword Y Offset is off in sidescrolling rooms for some reason (I can't figure out why??) so
-	; fix it here.
+	; Sword Y Offset is off by 4. This was due to me not realizing that the Z position was
+	; affecting its drawn position. Too late to fix this properly. w6WeaponItem is hardcoded to
+	; be drawn in an offset posiition when inverted.
 	ld a,(wAntigravState)
-	cp 1
-	jr nz,++
+	or a
+	jr z,++
 	ld a,(de)
 	add 4
 	ld (de),a

@@ -3292,18 +3292,28 @@ _getObjectPositionOnScreen:
 	ret nc
 
 	; Draw shadows and stuff if bit 6 is set
+	push hl
 	rlca
 	call c,_drawObjectTerrainEffects
+	pop hl
 
 	; Account for Z position
 	; ANTIGRAV: Z position makes objects go down when flipped on overworld
 	ld a,(wAntigravState)
 	cp 2
-	jr nz,+
+	jr nz,@normal
+	ld a,h
+	; Sword collisions are wonky, and the fix is wonky
+	cp >w1WeaponItem
+	jr nz,@inverted
+	ld a,d
+	sub 4
+	ld d,a
+@inverted:
 	ld a,d
 	sub e
 	jr ++
-+
+@normal:
 	ld a,d
 	add e
 ++
