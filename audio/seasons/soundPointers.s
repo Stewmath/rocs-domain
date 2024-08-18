@@ -20,7 +20,7 @@ soundPointers:
 	/* 0x10 */ m_soundPointer musGetEssence
 	/* 0x11 */ m_soundPointer musFileSelect
 	/* 0x12 */ m_soundPointer musHerosCave
-	/* 0x13 */ m_soundPointer musGnarledRootDungeon
+	/* 0x13 */ m_soundPointer musAncientRuins
 	/* 0x14 */ m_soundPointer musSnakesRemains
 	/* 0x15 */ m_soundPointer musPoisonMothsLair
 	/* 0x16 */ m_soundPointer musDancingDragonDungeon
