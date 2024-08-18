@@ -5097,6 +5097,9 @@ checkWarpsTopDown:
 ; @param	hFF8C	Tile Link is on
 ; @param	hFF8D	Position of tile Link is on
 checkWarpsSidescrolling:
+	call checkTileWarps
+	ret c
+
 	call checkScreenEdgeWarps
 	ret nc
 

@@ -19,13 +19,19 @@ interactionCode20:
 
 	ld a,(wDungeonIndex)
 	cp $ff
-	jp z,interactionDelete
+	jr nz,@inDungeon
 
+	ld hl,@overworldScriptTable
+	jr @indexBySubid
+
+@inDungeon:
 	ld hl,@scriptTable
 	rst_addDoubleIndex
 	ldi a,(hl)
 	ld h,(hl)
 	ld l,a
+
+@indexBySubid:
 	ld e,Interaction.subid
 	ld a,(de)
 	rst_addDoubleIndex
@@ -42,6 +48,9 @@ interactionCode20:
 	call interactionRunScript
 	ret nc
 	jp interactionDelete
+
+@overworldScriptTable:
+	.dw mainScripts.featherScript
 
 @scriptTable:
 	.dw @dungeon0

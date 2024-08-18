@@ -459,7 +459,7 @@ tilesetData:
 	.db $32, $05, $1a
 
 	; 0x57
-	.db $52, $28
+	.db $5f, $30
 	.db UNIQUE_GFXH_NONE
 	.db GFXH_TILESET_SIDESCROLL
 	.db PALH_TILESET_SIDESCROLL_SNAKES_REMAINS

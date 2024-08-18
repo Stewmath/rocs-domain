@@ -41,6 +41,9 @@ tileTypesTable:
 	.db $7d TILETYPE_LAVA
 	.db $7e TILETYPE_LAVA
 	.db $7f TILETYPE_LAVA
+
+	.db $b1 TILETYPE_HOLE
+	.db $b2 TILETYPE_HOLE
 	.db $00
 
 @subrosia:

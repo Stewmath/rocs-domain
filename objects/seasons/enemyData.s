@@ -29,8 +29,7 @@ objectData4092: ; UNUSED?
 	obj_EndPointer
 
 group1Map80EnemyObjectData:
-	obj_RandomEnemy $60 $36 $00
-	obj_RandomEnemy $20 $33 $00
+	obj_RandomEnemy $20 $36 $00
 	obj_EndPointer
 
 group1Mapa8EnemyObjectData:
@@ -356,17 +355,14 @@ group0Mapc4EnemyObjectData:
 	obj_EndPointer
 
 group0Mapd4EnemyObjectData:
-	obj_SpecificEnemyA $00 $09 $00 $38 $38
-	obj_SpecificEnemyA     $09 $00 $18 $58
+	obj_RandomEnemy $20 $1a $00
 	obj_EndPointer
 
 group0Mapd5EnemyObjectData:
 	obj_RandomEnemy $40 $09 $00
-	obj_Condition $01
 	obj_RandomEnemy $20 $48 $02
 	obj_EndPointer
 
-group0Mape4EnemyObjectData:
 group0Mape5EnemyObjectData:
 	obj_RandomEnemy $40 $1a $00
 	obj_EndPointer
@@ -1899,7 +1895,6 @@ group4MapcfEnemyObjectData:
 	obj_EndPointer
 
 group4Mapd0EnemyObjectData:
-	obj_SpecificEnemyA $00 $1d $00 $26 $a0
 	obj_EndPointer
 
 group4Mapd1EnemyObjectData:
@@ -2511,4 +2506,17 @@ group4Map26EnemyObjectData:
 group4Map02EnemyObjectData:
 	obj_SpecificEnemyA 0 $34 $00 $38 $a8
 	obj_SpecificEnemyA     $34 $00 $78 $a8
+	obj_EndPointer
+
+group0Mape4EnemyObjectData:
+	obj_RandomEnemy $20 $1a $00
+	obj_EndPointer
+
+group4Mapf0EnemyObjectData:
+	obj_SpecificEnemyA 0 $10 $04 $48 $38
+	obj_EndPointer
+
+group4Mape0EnemyObjectData:
+	obj_RandomEnemy $20 $32 $00
+	obj_RandomEnemy $20 $32 $80
 	obj_EndPointer

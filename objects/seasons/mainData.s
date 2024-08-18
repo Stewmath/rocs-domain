@@ -176,7 +176,6 @@ group4MapdcObjectData:
 group4MapddObjectData:
 group4MapdeObjectData:
 group4MapdfObjectData:
-group4Mape0ObjectData:
 group4Mape6ObjectData:
 group4Mape9ObjectData:
 group4MapecObjectData:
@@ -529,7 +528,7 @@ group0Map90ObjectData:
 	obj_End
 
 group1Map80ObjectData:
-	obj_Interaction $2f $80 $38 $58
+	obj_Interaction $2a $02 $48 $68
 	obj_Pointer group1Map80EnemyObjectData
 	obj_End
 
@@ -730,10 +729,12 @@ group0Map47ObjectData:
 
 group0Map48ObjectData:
 	obj_Pointer group0Map48EnemyObjectData
+	obj_Interaction $2a $00 $28 $78
 	obj_End
 
 group0Map49ObjectData:
 	obj_Pointer group0Map49EnemyObjectData
+	obj_Interaction $2a $01 $20 $28
 	obj_End
 
 group0Map4aObjectData:
@@ -814,17 +815,15 @@ group0Mapd3ObjectData:
 	obj_End
 
 group0Mapd4ObjectData:
-	obj_Interaction $dc $01 $58 $48
-	obj_Interaction $dc $02 $58 $78
 	obj_Pointer group0Mapd4EnemyObjectData
 	obj_End
 
 group0Mapd5ObjectData:
 	obj_Pointer group0Mapd5EnemyObjectData
+	obj_Interaction $20 $00 $38 $78
 	obj_End
 
 group0Mape4ObjectData:
-	obj_Interaction $90 $02 $78 $78
 	obj_Pointer group0Mape4EnemyObjectData
 	obj_End
 
@@ -1676,7 +1675,7 @@ group4MapefObjectData:
 	obj_End
 
 group4Mapf0ObjectData:
-	obj_Interaction $cc $00 $48 $78
+	obj_Pointer group4Mapf0EnemyObjectData
 	obj_End
 
 group4Mapf4ObjectData:
@@ -3302,7 +3301,6 @@ group4MapcfObjectData:
 	obj_End
 
 group4Mapd0ObjectData:
-	obj_Interaction $1e $0b $50 $00
 	obj_Pointer group4Mapd0EnemyObjectData
 	obj_End
 
@@ -4066,4 +4064,8 @@ group4Map0dObjectData:
 
 group4Map02ObjectData:
 	obj_Pointer group4Map02EnemyObjectData
+	obj_End
+
+group4Mape0ObjectData:
+	obj_Pointer group4Mape0EnemyObjectData
 	obj_End

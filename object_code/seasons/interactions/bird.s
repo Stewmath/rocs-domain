@@ -23,8 +23,15 @@ interactionCode2a:
 	jp nz,interactionDelete
 	ld hl,mainScripts.panickingBirdScript
 	jr @setScript
+
 @knowItAllBird:
-	ld hl,mainScripts.knowItAllBirdScript
+	ld hl,@scriptTable
+	ld e,Interaction.subid
+	ld a,(de)
+	rst_addDoubleIndex
+	ldi a,(hl)
+	ld h,(hl)
+	ld l,a
 @setScript:
 	call interactionSetScript
 
@@ -47,6 +54,11 @@ interactionCode2a:
 	ld l,$73
 	ld (hl),$32
 	jp objectSetVisible82
+
+@scriptTable:
+	.dw mainScripts.ritoScript1
+	.dw mainScripts.ritoScript2
+	.dw mainScripts.ritoScript3
 @birdWithImpa:
 	call interactionSetAlwaysUpdateBit
 	ld l,$46

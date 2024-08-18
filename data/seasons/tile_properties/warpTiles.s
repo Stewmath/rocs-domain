@@ -60,4 +60,5 @@ warpTileTable:
 	.db $00
 
 @sidescrolling:
+	.db $ff $00
 	.db $00

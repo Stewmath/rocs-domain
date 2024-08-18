@@ -196,8 +196,8 @@ treasureObjectData13:
 
 treasureObjectData17:
 	m_BeginTreasureSubids TREASURE_FEATHER
-	m_TreasureSubid $38, $01, $27, $16, TREASURE_OBJECT_FEATHER_00
-	m_TreasureSubid $38, $02, $28, $17, TREASURE_OBJECT_FEATHER_01
+	m_TreasureSubid $0a, $01, $27, $16, TREASURE_OBJECT_FEATHER_00
+	m_TreasureSubid $0a, $02, $28, $17, TREASURE_OBJECT_FEATHER_01
 	m_TreasureSubid $5a, $01, $37, $16, TREASURE_OBJECT_FEATHER_02
 	m_TreasureSubid $0a, $03, $37, $18, TREASURE_OBJECT_FEATHER_03
 

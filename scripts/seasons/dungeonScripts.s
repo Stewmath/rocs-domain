@@ -721,3 +721,8 @@ rocsScript_bossDownstairs:
 	; Open
 	spawninteraction INTERAC_DOOR_CONTROLLER, $09, $8e, $00
 	scriptend
+
+featherScript:
+	stopifitemflagset
+	spawnitem TREASURE_FEATHER, $00
+	scriptend

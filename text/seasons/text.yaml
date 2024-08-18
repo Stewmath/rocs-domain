@@ -16003,3 +16003,54 @@ groups:
         zeldahacking.net\stop
 
         Thank you for playing =)
+
+    - name: TX_RITO_1
+      index: auto
+      text: >-
+        Welcome to \col(3)Rito Village\col(0)! We've made our home here in the clouds above
+        \col(1)Roc's Island\col(0).\stop
+
+        Did you know? The \col(3)Roc\col(0) used to roost here! The temple to the north is
+        thought to have been a place of worship to them.
+
+    - name: TX_RITO_2
+      index: auto
+      text: >-
+        How did you get here, stranger?
+
+        ...A shipwreck?\stop
+
+        We have no boats on this island. The seas are too rough, as you've discovered. If you want
+        to leave, you'll need to sprout wings! Hah hah!
+
+    - name: TX_RITO_3
+      index: auto
+      text: >-
+        I am the chieftain of \col(1)Rito Village\col(0). We don't get many outsiders here. You
+        didn't come here by choice, did you?\stop
+
+        Only those with the \col(1)power of flight\col(0) can leave this place. If you wish to
+        return to your homeland, your only hope is to explore the \col(3)Roc's Temple\col(0) to the
+        northwest of here. It is said to contain legendary artifacts that can grant flight to even
+        the most... aerially challenged of species.
+
+        Do you intend to go there?
+          \opt()Yes \opt()No
+
+    - name: TX_RITO_3_NO
+      index: auto
+      text: >-
+        Then you'll be here for a while. We can't offer much, but try to make yourself at home.
+
+    - name: TX_RITO_3_YES
+      index: auto
+      text: >-
+        That \col(1)feather\col(0) you found won't get you far. Take this \col(1)cape\col(0). It is
+        said to have been crafted from a Roc's hide.\stop
+
+        ...PLEASE don't lose it.
+
+    - name: TX_RITO_4
+      index: auto
+      text: >-
+        Have you explored the \col(3)Roc's Temple\col(0) yet?

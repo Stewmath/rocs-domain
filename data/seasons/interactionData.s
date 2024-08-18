@@ -428,9 +428,9 @@ interaction7cSubidData:
 	m_InteractionSubidDataEnd
 
 interaction2aSubidData:
-	m_InteractionSubidData $46 $14 $00
 	m_InteractionSubidData $46 $14 $10
 	m_InteractionSubidData $46 $14 $20
+	m_InteractionSubidData $46 $14 $30
 	m_InteractionSubidData $46 $14 $30
 	m_InteractionSubidData $46 $14 $20
 	m_InteractionSubidData $46 $14 $30

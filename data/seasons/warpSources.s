@@ -51,7 +51,6 @@ warpSourcesTable:
 	.dw group7WarpSources
 
 group0WarpSources:
-	m_PointerWarp     $d4 warpSource764b
 	m_StandardWarp $0 $96 $02 $4 $4
 	m_PointerWarp     $8d warpSource7657
 	m_PointerWarp     $60 warpSource766b
@@ -144,6 +143,9 @@ group0WarpSources:
 	m_StandardWarp $0 $7e $9b $5 $4
 	m_StandardWarp $0 $b6 $7b $0 $4
 	m_StandardWarp $0 $38 $5d $4 $4
+	m_StandardWarp $0 $49 $01 $3 $4
+	m_StandardWarp $00 $d4 $12 $6 $4
+	m_StandardWarp $0 $48 $13 $6 $4
 	m_WarpListEndNoDefault
 
 warpSource75e3:
@@ -204,10 +206,6 @@ warpSource763f:
 	m_PositionWarp $16 $07 $3 $4
 	m_WarpListEndWithDefault
 
-warpSource764b:
-	m_PositionWarp $57 $01 $4 $9
-	m_PositionWarp $54 $00 $4 $4
-	m_WarpListEndWithDefault
 
 warpSource7653: ; hardcoded usage of this through getLinkedHerosCaveSideEntranceRoom
 	m_StandardWarp $0 $57 $52 $5 $9
@@ -506,7 +504,6 @@ group4WarpSources:
 	m_StandardWarp $4 $ed $5b $0 $3
 	m_StandardWarp $4 $ee $28 $2 $3
 	m_StandardWarp $4 $ef $01 $1 $3
-	m_StandardWarp $4 $f0 $02 $1 $3
 	m_StandardWarp $4 $f1 $03 $1 $3
 	m_StandardWarp $0 $f2 $04 $1 $2
 	m_StandardWarp $4 $f2 $05 $1 $3
@@ -826,6 +823,8 @@ group6WarpSources:
 	m_StandardWarp $0 $b6 $7b $0 $4
 	m_StandardWarp $02 $3f $0b $4 $3
 	m_StandardWarp $02 $0d $47 $4 $3
+	m_StandardWarp $0 $f0 $1f $0 $4
+	m_StandardWarp $01 $d0 $0a $0 $3
 	m_WarpListEndNoDefault
 
 group7WarpSources:

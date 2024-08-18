@@ -2393,8 +2393,8 @@ paletteData4e30:
 
 paletteData4e60:
 	m_RGB16 $1f $1f $0e
-	m_RGB16 $1f $1e $0d
-	m_RGB16 $11 $11 $01
+	m_RGB16 $0e $1c $02
+	m_RGB16 $06 $11 $00
 	m_RGB16 $00 $00 $00
 
 	m_RGB16 $1f $1f $0e
@@ -4379,7 +4379,7 @@ paletteData5a30:
 	m_RGB16 $00 $00 $00
 
 	m_RGB16 $15 $1a $19
-	m_RGB16 $0b $11 $17
+	m_RGB16 $13 $18 $1e
 	m_RGB16 $00 $08 $10
 	m_RGB16 $00 $00 $00
 

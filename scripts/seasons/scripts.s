@@ -1007,7 +1007,34 @@ bipinScript3:
 ; ==================================================================================================
 ; INTERAC_BIRD
 ; ==================================================================================================
-knowItAllBirdScript:
+ritoScript1:
+	rungenericnpc TX_RITO_1
+
+ritoScript2:
+	rungenericnpc TX_RITO_2
+
+ritoScript3:
+	jumpifroomflagset ROOMFLAG_ITEM, @gotItem
+
+	initcollisions
+@loop:
+	checkabutton
+	showtext TX_RITO_3
+	jumpifmemoryeq wSelectedTextOption, 0, @yes
+
+@no:
+	showtext TX_RITO_3_NO
+	scriptjump ritoScript3
+
+@yes:
+	setdisabledobjectsto91
+	showtext TX_RITO_3_YES
+	wait 30
+	giveitem TREASURE_FEATHER, $01
+	enableallobjects
+
+@gotItem:
+	rungenericnpc TX_RITO_4
 
 
 panickingBirdScript:
@@ -1023,92 +1050,6 @@ blossomScript0:
 
 ; Blossom asking for money to see a doctor
 blossomScript1:
-	initcollisions
-	asm15 scriptHelp.checkc6e2BitSet, $01
-	jumpifobjectbyteeq Interaction.var3b, $01, @alreadyGaveMoney
-@loop:
-	checkabutton
-	setdisabledobjectsto91
-	showtextlowindex <TX_440b
-	jumptable_memoryaddress wSelectedTextOption
-	.dw @selectedYes
-	.dw @selectedNo
-@selectedYes:
-	wait 30
-	showtextlowindex <TX_440c
-	jumptable_memoryaddress wSelectedTextOption
-	.dw @give150Rupees
-	.dw @give50Rupees
-	.dw @give10Rupees
-	.dw @give1Rupee
-
-@give150Rupees:
-	asm15 scriptHelp.blossom_checkHasRupees, RUPEEVAL_150
-	jumpifobjectbyteeq Interaction.var3c, $01, @notEnoughRupees
-	asm15 removeRupeeValue, RUPEEVAL_150
-	asm15 scriptHelp.blossom_addValueToChildStatus, $08
-	asm15 scriptHelp.setc6e2Bit, $01
-	asm15 scriptHelp.setNextChildStage, $02
-	enableallobjects
-@gave150RupeesLoop:
-	showtextlowindex <TX_440d
-	checkabutton
-	scriptjump @gave150RupeesLoop
-
-@give50Rupees:
-	asm15 scriptHelp.blossom_checkHasRupees, RUPEEVAL_050
-	jumpifobjectbyteeq Interaction.var3c, $01, @notEnoughRupees
-	asm15 removeRupeeValue, RUPEEVAL_050
-	asm15 scriptHelp.blossom_addValueToChildStatus, $05
-	asm15 scriptHelp.setc6e2Bit, $01
-	asm15 scriptHelp.setNextChildStage, $02
-	enableallobjects
-@gave50RupeesLoop:
-	showtextlowindex <TX_440e
-	checkabutton
-	scriptjump @gave50RupeesLoop
-
-@give10Rupees:
-	asm15 scriptHelp.blossom_checkHasRupees, RUPEEVAL_010
-	jumpifobjectbyteeq Interaction.var3c, $01, @notEnoughRupees
-	asm15 removeRupeeValue, RUPEEVAL_010
-	asm15 scriptHelp.blossom_addValueToChildStatus, $02
-	asm15 scriptHelp.setc6e2Bit, $01
-	asm15 scriptHelp.setNextChildStage, $02
-	enableallobjects
-@gave10RupeesLoop:
-	showtextlowindex <TX_440f
-	checkabutton
-	scriptjump @gave10RupeesLoop
-
-@give1Rupee:
-	asm15 scriptHelp.blossom_checkHasRupees, RUPEEVAL_001
-	jumpifobjectbyteeq Interaction.var3c, $01, @notEnoughRupees
-	asm15 removeRupeeValue, RUPEEVAL_001
-	asm15 scriptHelp.setc6e2Bit, $01
-	asm15 scriptHelp.setNextChildStage, $02
-	enableallobjects
-@gave1RupeeLoop:
-	showtextlowindex <TX_4410
-	checkabutton
-	scriptjump @gave1RupeeLoop
-
-@notEnoughRupees:
-	wait 30
-	showtextlowindex <TX_4432
-	enableallobjects
-	scriptjump @loop
-
-@selectedNo:
-	wait 30
-	showtextlowindex <TX_4411
-	enableallobjects
-	scriptjump @loop
-
-@alreadyGaveMoney:
-	checkabutton
-	showtextlowindex <TX_4431
-	scriptjump @alreadyGaveMoney
 
 
 ; Blossom tells you that the baby has gotten better
