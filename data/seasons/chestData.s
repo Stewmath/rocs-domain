@@ -39,7 +39,7 @@ chestGroup3Data:
 	.db $ff
 
 chestGroup4Data:
-	m_ChestData $45, $26, TREASURE_OBJECT_SMALL_KEY_03
+	m_ChestData $45, $26, TREASURE_OBJECT_HEART_PIECE_01
 	m_ChestData $6d, $21, TREASURE_OBJECT_COMPASS_02
 	m_ChestData $8d, $1c, TREASURE_OBJECT_HEART_PIECE_01
 	m_ChestData $87, $01, TREASURE_OBJECT_SMALL_KEY_03

@@ -2420,6 +2420,8 @@ group4Map1cObjectData:
 	obj_Part $09 $00 $92
 	obj_ItemDrop 0 $01 $85
 	obj_ItemDrop     $01 $89
+	obj_ItemDrop     $01 $75
+	obj_ItemDrop     $01 $79
 	obj_End
 
 group4Map1dObjectData:

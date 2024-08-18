@@ -358,15 +358,12 @@ initialFileVariables:
 	.db <wKidName+5,			$00
 	.db <wObtainedTreasureFlags,		1<<TREASURE_PUNCH
 	.db <wMaxBombs,				$10
-	.db <wLinkHealth,			$10
-	.db <wLinkMaxHealth,			$10
+	.db <wLinkHealth,			$14
+	.db <wLinkMaxHealth,			$14
 
 	.db <wSwordLevel,			$01
-	.db <wFeatherLevel,			$02
 	.db <wInventoryB,			ITEM_SWORD
-	.db <wInventoryA,			ITEM_FEATHER
 	.db <wObtainedTreasureFlags,		(1<<TREASURE_PUNCH) | (1<<TREASURE_SWORD)
-	.db <wObtainedTreasureFlags+(TREASURE_FEATHER/8), (1<<(TREASURE_FEATHER&7))
 
 .ifdef ROM_AGES
 	; Initial spawn location
@@ -385,9 +382,9 @@ initialFileVariables:
 .else ;ROM_SEASONS
 	; Initial spawn location
 	.db <wDeathRespawnBuffer.group,		$00
-	.db <wDeathRespawnBuffer.room,		$48
-	.db <wDeathRespawnBuffer.y,		$38
-	.db <wDeathRespawnBuffer.x,		$38
+	.db <wDeathRespawnBuffer.room,		$e4
+	.db <wDeathRespawnBuffer.y,		$48
+	.db <wDeathRespawnBuffer.x,		$48
 	.db <wDeathRespawnBuffer.facingDir,	$02
 .endif
 	.db $00
