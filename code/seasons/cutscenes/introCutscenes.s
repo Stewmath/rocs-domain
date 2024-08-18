@@ -1109,6 +1109,7 @@ cutscenePregameIntroHandler:
 	.dw @stateWait1
 	.dw @stateShowText
 	.dw @stateWaitText
+	.dw @stateEnd
 
 @stateInit:
 	ld a,(wPaletteThread_mode)
@@ -1179,7 +1180,23 @@ cutscenePregameIntroHandler:
 	jp incCutsceneState
 
 @stateWaitText:
+	ld a,(wTextIsActive)
+	or a
+	ret nz
+	call decCbb3
+	ret nz
+	jp incCutsceneState
 	ret
+
+@stateEnd:
+	ld hl,wGameState
+	xor a
+	ldi (hl),a
+	ld (hl),a
+	ld a,SNDCTRL_STOPMUSIC
+	call playSound
+	ld a,GLOBALFLAG_3d
+	jp setGlobalFlag
 
 
 
