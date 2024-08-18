@@ -8058,12 +8058,15 @@ groups:
     text: |-
       Unleash your new power, and discover a new perspective.
 
+  - name: TX_2e02
+    index: 0x02
+    text: |-
+      Ye who have mastered the Roc's power, take one last step, and make the skies your own.
+
   - name:
-    - TX_2e02
     - TX_2e03
     - TX_2e04
     index:
-    - 0x02
     - 0x03
     - 0x04
     text: |-

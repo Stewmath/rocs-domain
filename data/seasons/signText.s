@@ -53,6 +53,7 @@ signTextGroup2Data:
 signTextGroup4Data:
 	.db $41, $16, <TX_2e00
 	.db $61, $0c, <TX_2e01
+	.db $17, $06, <TX_2e02
 	.db $00
 
 signTextGroup5Data:
