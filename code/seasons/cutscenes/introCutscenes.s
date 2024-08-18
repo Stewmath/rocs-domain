@@ -1377,6 +1377,8 @@ cutsceneInvertedBlockDrop:
 	ld (wTmpcbb9),a ; Room to revert to
 	ldi a,(hl)
 	ld (wTmpcbbb),a ; Tile position to change
+	ldi a,(hl)
+	ld (wTmpcbbc),a ; Position in room to revert to
 
 	xor a
 	call forceLoadRoom
@@ -1559,12 +1561,53 @@ cutsceneInvertedBlockDrop:
 	ld (de),a
 	jr @@flagLoop
 ++
-	ld a,1
+	ld a,3
 	ld (w1Link.enabled),a
 
-	xor a
-	ld (wCutsceneIndex),a
-	ld (wGameState),a
+	ld a,(wTmpcbb9) ; Room to revert to
+	ld (wActiveRoom),a
+
+	;ld a,(wTmpcbbc) ; Position to revert to
+	;ld b,b
+	;call objectSetShortPosition
+
+	; Code copied from cutscene05
+	call disableLcd
+	call clearOam
+	;call func_5cfe
+++
+	callab bank1.setInteractionsEnabledTo2
+	callab bank1.clearObjectsWithEnabled2
+	call clearItems
+	call clearEnemies
+	call clearParts
+	call clearReservedInteraction0
+
+.ifdef ROM_AGES
+	ld a,(wScreenTransitionDirection)
+	ldh (<hFF92),a
+	call clearScreenVariables
+	ldh a,(<hFF92)
+	ld (wScreenTransitionDirection),a
+
+.else; ROM_SEASONS
+	call clearScreenVariables
+.endif
+
+	callab bank1.clearMemoryOnScreenReload
+	call loadScreenMusicAndSetRoomPack
+	call loadTilesetData
+	call loadTilesetGraphics
+	call func_131f
+	ld de,w1Link.yh
+	call getShortPositionFromDE
+	ld (wWarpDestPos),a
+	jpab bank1.func_5c18
+
+@fadein3:
+	ld a,(wPaletteThread_mode)
+	or a
+	ret nz
 	ret
 
 @flagList:
@@ -1642,6 +1685,7 @@ cutsceneInvertedBlockDrop:
 	.db 32 ; # of frames
 	.db $21 ; Room to revert to
 	.db $5b ; Tile position (off by 1 vertical tile? *shrug*)
+	.db $96
 
 @room07Data1:
 	.db $04 $15 ; Dest room
