@@ -220,13 +220,26 @@ parentItemCode_feather:
 	ld (wLinkForceState),a
 
 	; Write $00 to wcc50 to allow the warp to occur, $01 to block it.
-	; Allow it to occur only when in the dungeon.
+	; Allow it to occur only when in the dungeon, or specific rooms
+	ld a,(wActiveGroup)
+	cp 3
+	jr nz,++
+	ld a,(wActiveRoom)
+	cp $80
+	jr z,@allow
+	cp $90
+	jr z,@allow
+++
 	ld a,(wDungeonIndex)
 	inc a
-	ld a,$00
-	jr nz,+
+	jr nz,@allow
+
+@disallow:
 	ld a,$01
-+
+	jr ++
+@allow:
+	xor a
+++
 	ld (wcc50),a
 
 	jp @deleteParent

@@ -1792,12 +1792,20 @@ linkState09:
 	ld (wCutsceneTrigger),a
 	ret
 ++
-	; ANTIGRAV: Alternate between floors 0 and 1.
+	; ANTIGRAV: Lookup hardcoded warp table
+	ld a,(wActiveRoom)
+	ld e,a
+	ld hl,@hardcodedWarpTable
+	call lookupKey
+	jr c,++
+
+	; If no entry exists, alternate between floors 0 and 1.
 	ld a,(wDungeonFloor)
 	xor 1
 	ld (wDungeonFloor),a
 
 	call getActiveRoomFromDungeonMapPosition
+++
 	ld (wWarpDestRoom),a
 
 	ld a,(wAntigravState)
@@ -1806,6 +1814,11 @@ linkState09:
 	call objectGetShortPosition
 	ld (wWarpDestPos),a
 	jr ++
+
+@hardcodedWarpTable:
+	.db $90, $80
+	.db $80, $90
+	.db $00
 
 	; Need to do this to avoid warping to the wrong tile. Test this around holes.
 @getInvertedPosition:

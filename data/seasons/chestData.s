@@ -34,6 +34,7 @@ chestGroup1Data:
 
 chestGroup2Data:
 chestGroup3Data:
+	m_ChestData $64, $90, TREASURE_OBJECT_HEART_CONTAINER_01
 	m_ChestData $34, $9b, TREASURE_OBJECT_GASHA_SEED_01
 	m_ChestData $13, $88, TREASURE_OBJECT_BOMBS_00
 	.db $ff

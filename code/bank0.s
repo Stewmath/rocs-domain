@@ -11231,6 +11231,14 @@ initializeRoom:
 updateAntigravState:
 	; ANTIGRAV: Update antigrav state when moving between rooms (1 for top-down, 2 for
 	; sidescroll)
+	ld a,(wActiveGroup)
+	cp 3
+	jr nz,+
+	ld a,(wActiveRoom)
+	cp $90
+	ld a,2
+	jr z,@setState
++
 	ld a,(wDungeonIndex)
 	inc a
 	ld a,0
@@ -11241,9 +11249,9 @@ updateAntigravState:
 	ld a,(wDungeonFloor)
 	or a
 	ld a,2
-	jr nz,+
+	jr nz,@setState
 	xor a
-+
+@setState:
 	ld (wAntigravState),a
 ++
 	ld a,(wAntigravState)
