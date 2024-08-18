@@ -979,7 +979,7 @@ tileReplacement_group4Map1a;
 
 tileReplacement_group4Map21:
 	call getThisRoomFlags
-	bit 5,(hl)
+	bit 7,(hl)
 	ret z
 
 	ld hl,wRoomLayout+$43

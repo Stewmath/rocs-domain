@@ -532,12 +532,12 @@ rocsScript_longBridge:
 
 
 rocsScript_longBridge2:
-	jumpifroomflagset $20, @end
+	jumpifroomflagset $80, @end
 	checkmemoryeq wActiveTriggers, $02
 
 	playsound SND_SOLVEPUZZLE
 	writeobjectbyte Interaction.var30, $43
-	orroomflag $20
+	orroomflag $80
 
 @loop:
 	wait 8
